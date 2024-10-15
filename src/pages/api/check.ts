@@ -15,13 +15,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           const response = await axios.get(url);
           return { url, healthy: response.status === 200, status: response.status };
         } catch (error) {
-          return { url, healthy: false, status: error.response ? error.response.status : 'N/A' };
+            if (error instanceof Error)
+                return { url, healthy: false, status: error.message ? error.message : 'N/A' };
         }
       }));
 
       res.status(200).json(results);
     } catch (error) {
-      res.status(500).json({ error: 'Failed to check URLs' });
+        if (error instanceof Error)
+            res.status(500).json({ error: 'Failed to check URLs: ' + error.message });
     }
   } else {
     res.setHeader('Allow', ['POST']);
