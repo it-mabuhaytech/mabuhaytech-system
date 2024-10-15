@@ -23,7 +23,7 @@ const HealthChecker: React.FC = () => {
 
   return (
     <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md">
-      <h1 className="text-2xl font-bold text-center mb-4">Website Health Checker</h1>
+      <h1 className="text-2xl text-black font-bold text-center mb-4">Website Health Checker</h1>
       <form onSubmit={handleSubmit}>
         <textarea
           value={urls}
