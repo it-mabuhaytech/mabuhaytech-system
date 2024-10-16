@@ -1,3 +1,4 @@
+import React from 'react';
 
 export function TopNav(){
     return (
@@ -15,3 +16,5 @@ export function TopNav(){
       </header>
     );
 }
+
+export default TopNav;

@@ -1,6 +1,4 @@
 import React from 'react';
-import Link from 'next/link';
-import HealthChecker from '../../components/HealthChecker';
 import { TopNav } from './top-nav';
 import { WelcomePage } from './welcome-page';
 

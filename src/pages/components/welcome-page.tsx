@@ -7,7 +7,7 @@ export function WelcomePage() {
         <main className="flex-grow container mx-auto p-6">
         <section className="text-center my-10">
           <h2 className="text-4xl font-bold">Check the Health of Your Website</h2>
-          <p className="mt-4 text-gray-600">Easily monitor your websites' uptime and performance.</p>
+          <p className="mt-4 text-gray-600">Easily monitor your websites uptime and performance.</p>
           <Link href="/health-checker">
             <div className="mt-6 inline-block bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">
                 Get Started
@@ -35,3 +35,5 @@ export function WelcomePage() {
       </main>
     );
 }
+
+export default WelcomePage;
