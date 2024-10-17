@@ -1,5 +1,4 @@
 import React from 'react';
-import { TopNav } from './top-nav';
 import { WelcomePage } from './welcome-page';
 import TimeLogger from '../timelogger/page';
 
