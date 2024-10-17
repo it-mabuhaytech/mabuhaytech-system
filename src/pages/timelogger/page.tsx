@@ -36,8 +36,8 @@ const TimeLogger: React.FC = () => {
 
   return (
     <div className="max-w-md mx-auto my-5 p-6 bg-white rounded-lg shadow-md text-center">
-      <h2 className="text-2xl font-bold mb-4">{formattedDate}</h2>
-      <h2 className="text-7xl font-bold mb-4">{currentTime.toLocaleTimeString()}</h2>
+      <h2 className="text-2xl text-black font-bold mb-4">{formattedDate}</h2>
+      <h2 className="text-7xl text-black font-bold mb-4">{currentTime.toLocaleTimeString()}</h2>
       <div className="flex justify-center mb-4">
         <button
           className={`px-4 py-2 text-white font-semibold rounded-lg shadow-md transition duration-300 ${
@@ -58,7 +58,7 @@ const TimeLogger: React.FC = () => {
           Log Out
         </button>
       </div>
-      <h3 className="font-semibold">Logs:</h3>
+      <h3 className="text-black font-semibold">Logs:</h3>
       <ul className="list-disc list-inside">
         {logs.map((log, index) => (
           <li key={index} className="text-left">{log}</li>

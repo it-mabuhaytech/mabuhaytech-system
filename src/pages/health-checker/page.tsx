@@ -24,6 +24,7 @@ const HealthChecker: React.FC = () => {
   return (
     <div className="max-w-lg mx-auto my-5 p-6 bg-white rounded-lg shadow-md">
       <h1 className="text-2xl text-black font-bold text-center mb-4">Website Health Checker</h1>
+      <p>Please include full URL address. For example, `https://www.shashin.ai`</p>
       <form onSubmit={handleSubmit}>
         <textarea
           value={urls}
