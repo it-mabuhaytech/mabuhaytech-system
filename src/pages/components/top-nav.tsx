@@ -2,7 +2,7 @@ import React from 'react';
 
 export function TopNav(){
     return (
-        <header className="bg-white shadow-md w-full p-4">
+        <header className="bg-white shadow-md w-full p-4 sticky top-0">
         <div className="container mx-auto flex justify-between items-center">
           <h1 className="text-2xl font-bold">MabuhayTech Health Checker</h1>
           <nav>

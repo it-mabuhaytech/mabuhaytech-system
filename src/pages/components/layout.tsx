@@ -1,16 +1,15 @@
 import React from 'react';
 import { TopNav } from './top-nav';
 import { Footer } from './footer';
-import { WelcomePage } from './welcome-page';
-import TimeLogger from '../timelogger/page';
+import MainPage from './main-page';
+import Sidebar from './sidebar';
+
 
 const Layout: React.FC = () => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex h-full w-full flex-col bg-background">
       <TopNav/>
-      <div className="mt-3"></div>
-      <TimeLogger/>
-      <WelcomePage/>
+      <Sidebar/>
       <Footer/>
     </div>
   );

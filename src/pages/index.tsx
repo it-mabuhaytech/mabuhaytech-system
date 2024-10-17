@@ -2,7 +2,7 @@ import Layout from '../pages/components/layout';
 
 const Home: React.FC = () => {
   return (
-    <div className="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div className="flex h-screen w-full flex-col bg-background">
       <Layout>
       </Layout>
     </div>
