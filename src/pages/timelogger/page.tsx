@@ -35,7 +35,8 @@ const TimeLogger: React.FC = () => {
   const formattedDate = currentDate.toLocaleDateString('en-US', options);
 
   return (
-    <div className="max-w-md mx-auto my-5 p-6 bg-white rounded-lg shadow-md text-center">
+    <div className="w-11/12 mx-auto my-6 px-4 p-6 bg-white rounded-lg shadow-md text-center">
+      <h2 className="text-3xl text-black font-bold mb-4">Good Morning, John Paul!</h2>
       <h2 className="text-2xl text-black font-bold mb-4">{formattedDate}</h2>
       <h2 className="text-7xl text-black font-bold mb-4">{currentTime.toLocaleTimeString()}</h2>
       <div className="flex justify-center mb-4">
@@ -61,7 +62,7 @@ const TimeLogger: React.FC = () => {
       <h3 className="text-black font-semibold">Logs:</h3>
       <ul className="list-disc list-inside">
         {logs.map((log, index) => (
-          <li key={index} className="text-left">{log}</li>
+          <li key={index} className="items-center">{log}</li>
         ))}
       </ul>
     </div>

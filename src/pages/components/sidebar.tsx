@@ -1,67 +1,48 @@
 // components/Sidebar.tsx
-import { useState } from 'react';
-import TimeLogger from '../timelogger/page';
-import HealthChecker from '../health-checker/page';
+import React from 'react';
 
-const Sidebar: React.FC = () => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+interface SidebarProps {
+    isOpen: boolean;
+    toggleSidebar: () => void;
+    loadComponent: (component: string) => void;
+}
 
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const [currentComponent, setCurrentComponent] = useState<JSX.Element | null>(null);
-
-  const loadComponent = (component: string) => {
-    switch (component) {
-      case 'A':
-        setCurrentComponent(<TimeLogger />);
-        break;
-      case 'B':
-        setCurrentComponent(<HealthChecker />);
-        break;
-      default:
-        setCurrentComponent(null);
-    }
-  };
-
-  return (
-    <div className="flex max-h-full w-full flex-1 overflow-hidden">
-      <button
-        onClick={toggleMenu}
-        className="p-4 text-2xl bg-gray-800 text-white focus:outline-none z-50"
-      >
-        ☰
-      </button>
-      <nav
-        className={`flex top-0 left-0 w-64 h-full bg-gray-800 text-white p-4 transition-transform duration-300 ease-in-out transform ${
-          isOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
-      >
-        <ul>
-          <li className="mb-4">
-            <button
-            onClick={() => loadComponent('A')}
-            className="block w-full text-left p-2 hover:bg-gray-700 transition duration-300"
+const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar, loadComponent }) => {
+    return (
+        <div
+            className={`fixed inset-0 bg-gray-800 bg-opacity-50 transition-opacity duration-300 ${
+                isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+            }`}
+            onClick={toggleSidebar}
+        >
+            <div
+                className={`fixed left-0 top-0 h-full w-64 bg-white shadow-lg transform transition-transform duration-300 ${
+                    isOpen ? 'translate-x-0' : '-translate-x-full'
+                }`}
+                onClick={(e) => e.stopPropagation()}
             >
-            Home
-            </button>
-          </li>
-          <li className="mb-4">
-            <button
-            onClick={() => loadComponent('B')}
-            className="block w-full text-left p-2 hover:bg-gray-700 transition duration-300"
-            >
-            Health Checker
-            </button>
-          </li>
-        </ul>
-      </nav>
-      <div className="flex h-full w-full flex-1 flex-col items-center overflow-hidden">
-        {currentComponent}
-      </div>
-    </div>
-  );
+                <div className="flex justify-end p-4">
+                    <button onClick={toggleSidebar} className="text-gray-500">
+                        &times;
+                    </button>
+                </div>
+                <nav className="p-4">
+                    <ul>
+                        <li className="py-2">
+                            <button onClick={() => loadComponent('A')} className="w-full text-left">
+                                Home
+                            </button>
+                        </li>
+                        <li className="py-2">
+                            <button onClick={() => loadComponent('B')} className="w-full text-left">
+                                Health Checker
+                            </button>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    );
 };
 
 export default Sidebar;
