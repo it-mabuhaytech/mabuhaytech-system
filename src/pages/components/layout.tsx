@@ -5,7 +5,6 @@ import Sidebar from './sidebar';
 import TimeLogger from '../timelogger/page';
 import HealthChecker from '../health-checker/page';
 
-
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentComponent, setCurrentComponent] = useState<React.ReactNode>(<TimeLogger />);
