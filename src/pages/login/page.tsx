@@ -22,6 +22,7 @@ const Login = () => {
     if (!response.ok) {
       const data = await response.json();
       setError(data.message);
+      console.log(error);
     } else {
       // Handle successful login (e.g., redirect or set user state)
       localStorage.setItem('authenticated', 'true');
