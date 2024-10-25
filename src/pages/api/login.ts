@@ -2,7 +2,6 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { db } from '../../db/db';
 import { eq } from 'drizzle-orm';
 import { usersTable } from '../../db/schema/users';
-import bcrypt from 'bcryptjs';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {

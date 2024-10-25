@@ -1,6 +1,4 @@
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core"
-import { db } from '../db';
-import bcrypt from 'bcryptjs';
 
 export const usersTable = sqliteTable("users_table", {
     id: integer().primaryKey({ autoIncrement: true }),
