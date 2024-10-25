@@ -1,4 +1,5 @@
 import Layout from '../pages/components/layout';
+import withAuth from '../hoc/withAuth';
 import 'dotenv/config';
 
 const Home: React.FC = () => {
@@ -12,4 +13,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default withAuth(Home);
