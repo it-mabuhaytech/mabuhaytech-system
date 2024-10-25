@@ -6,11 +6,7 @@ import { usersTable } from '../../db/schema/users';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
     const { username_input, password } = req.body;
-
-    console.log(req.body);
     const user = await db.select().from(usersTable).where(eq(usersTable.username, username_input));
-
-    console.log(user);
 
     if (user.length === 0 || password !== user[0].password) {
       return res.status(401).json({ message: 'Invalid credentials' });
