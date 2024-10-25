@@ -1,3 +1,4 @@
+import withAuth from '@/hoc/withAuth';
 import React, { useEffect, useState } from 'react';
 
 const TimeLogger: React.FC = () => {
@@ -69,4 +70,4 @@ const TimeLogger: React.FC = () => {
   );
 };
 
-export default TimeLogger;
+export default withAuth(TimeLogger);

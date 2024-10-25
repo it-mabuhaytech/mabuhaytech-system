@@ -1,7 +1,8 @@
 import React from 'react';
 
 import Image from 'next/image';
-import { Bell, User } from 'lucide-react';
+import ProfileDropdown from './profile-down';
+import { Bell } from 'lucide-react';
 import { Separator } from "@/components/ui/separator";
 
 interface TopNavProps {
@@ -34,7 +35,9 @@ const TopNav: React.FC<TopNavProps> = ({ toggleSidebar }) => {
               <Bell/>
               <Separator orientation="vertical" />
               <li><a href="#features" className="text-black hover:text-blue-500">John Paul Nool</a></li>
-              <User/>
+              <div className="flex items-center">
+                <ProfileDropdown />
+              </div>
             </ul>
           </nav>
         </div>
