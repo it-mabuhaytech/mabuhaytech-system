@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import withAuth from '@/hoc/withAuth';
+import { setCurrentUser, fetchUserById } from '../../utils/userStore';
 
 const Login = () => {
   const [username_input, setUsername] = useState('');
@@ -25,6 +26,11 @@ const Login = () => {
       console.log(error);
     } else {
       // Handle successful login (e.g., redirect or set user state)
+      const data = await response.json();
+      if (!data.id) {
+        console.log('User ID is required');
+      }
+      localStorage.setItem('userid', data.id);
       localStorage.setItem('authenticated', 'true');
       router.push('/');
       console.log('Login successful!');

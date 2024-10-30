@@ -1,15 +1,28 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import Image from 'next/image';
 import ProfileDropdown from './profile-down';
 import { Bell } from 'lucide-react';
 import { Separator } from "@/components/ui/separator";
+import { getCurrentUser } from '../utils/userStore';
 
 interface TopNavProps {
   toggleSidebar: () => void;
 }
 
 const TopNav: React.FC<TopNavProps> = ({ toggleSidebar }) => {
+  const [userID, setUserID] = useState<string | null>(null);
+  const [itemExists, setItemExists] = useState<boolean>(false);
+  const userLocalID = 'userid';
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const userID = localStorage.getItem('userid');
+      setItemExists(userID !== null);
+      setUserID(userID);
+    }
+  }, [userLocalID]);
+
     return (
         <header className="bg-white shadow-md w-full p-4 sticky top-0 z-10">
         <div className="container flex mx-auto justify-between items-center">
@@ -34,7 +47,7 @@ const TopNav: React.FC<TopNavProps> = ({ toggleSidebar }) => {
             <ul className="flex space-x-4">
               <Bell/>
               <Separator orientation="vertical" />
-              <li><a href="#features" className="text-black hover:text-blue-500">John Paul Nool</a></li>
+              <li><a href="#features" className="text-black hover:text-blue-500">{userID}</a></li>
               <div className="flex items-center">
                 <ProfileDropdown />
               </div>
