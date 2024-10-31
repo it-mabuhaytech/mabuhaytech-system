@@ -1,6 +1,6 @@
 import React from 'react';
 import { WelcomePage } from './welcome-page';
-import TimeLogger from '../timelogger/page';
+import TimeLogger from './timelogger/page';
 
 const LandingPage: React.FC = () => {
   
