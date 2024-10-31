@@ -15,6 +15,6 @@ export const getCurrentUser = () => {
 
 // Fetch user details from the database
 export const fetchUserById = async (id: number) => {
-  const user = await db.select().from(usersTable).where(eq(usersTable.id, id)).execute();
+  const user = await db.select().from(usersTable).where(eq(usersTable.id, id));
   return user;
 };

@@ -2,7 +2,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import withAuth from '@/hoc/withAuth';
-import { setCurrentUser, fetchUserById } from '../../utils/userStore';
 
 const Login = () => {
   const [username_input, setUsername] = useState('');

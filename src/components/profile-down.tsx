@@ -18,10 +18,9 @@ const ProfileDropdown: React.FC = () => {
   };
 
   return (
-    <div className="relative inline-block text-left">
+    <div onClick={toggleDropdown} className="relative inline-block py-2 px-4 rounded-xl shadow-md text-left hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
       <User
-        onClick={toggleDropdown}
-        className='flex items-center justify-between w-full rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'
+        className='flex items-center justify-between w-full rounded-md shadow-sm text-sm font-medium text-gray-700'
       >
       </User>
       {isOpen && (
@@ -29,7 +28,7 @@ const ProfileDropdown: React.FC = () => {
           <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
             <a
               href="/profile"
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              className="block px-4 py-2 text-sm text-gray-700"
             >
               Profile Settings
             </a>
