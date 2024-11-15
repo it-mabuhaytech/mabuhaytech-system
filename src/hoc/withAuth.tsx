@@ -10,6 +10,8 @@ const withAuth = (WrappedComponent: React.FC) => {
       const isAuthenticated = localStorage.getItem('authenticated');
       if (!isAuthenticated) {
         router.push('/login/page');
+      } else if (router.route === "/login/page"){
+        router.push('/');
       }
     }, [router]);
 

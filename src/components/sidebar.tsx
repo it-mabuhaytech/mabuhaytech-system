@@ -29,12 +29,17 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar, loadComponent 
                 <nav className="p-4">
                     <ul>
                         <li className="py-2">
-                            <button onClick={() => loadComponent('A')} className="w-full text-left">
+                            <button onClick={() => loadComponent('home')} className="w-full text-left">
                                 Home
                             </button>
                         </li>
                         <li className="py-2">
-                            <button onClick={() => loadComponent('B')} className="w-full text-left">
+                            <button onClick={() => loadComponent('timelogshistory')} className="w-full text-left">
+                                Time Logs History
+                            </button>
+                        </li>
+                        <li className="py-2">
+                            <button onClick={() => loadComponent('healthcheck')} className="w-full text-left">
                                 Health Checker
                             </button>
                         </li>
