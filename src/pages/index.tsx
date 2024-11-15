@@ -1,4 +1,4 @@
-import Layout from '../pages/components/layout';
+import Layout from '../components/layout';
 import withAuth from '../hoc/withAuth';
 import 'dotenv/config';
 

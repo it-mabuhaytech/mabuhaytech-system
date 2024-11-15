@@ -13,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // Handle successful login (e.g., set session)
-    return res.status(200).json({ message: 'Login successful' });
+    return res.status(200).json({ message: 'Login successful', id: user[0].id });
   }
 
   return res.status(405).json({ message: 'Method not allowed' });
