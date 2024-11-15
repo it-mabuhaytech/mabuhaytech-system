@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import TopNav from './top-nav';
 import { Footer } from './footer';
 import Sidebar from './sidebar';
-import TimeLogger from '../timelogger/page';
-import HealthChecker from '../health-checker/page';
+import TimeLogger from './timelogger/page';
+import HealthChecker from './health-checker/page';
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
