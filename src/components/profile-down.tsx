@@ -1,6 +1,7 @@
 // components/ProfileDropdown.tsx
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import { User } from 'lucide-react';
 
 const ProfileDropdown: React.FC = () => {
@@ -26,12 +27,11 @@ const ProfileDropdown: React.FC = () => {
       {isOpen && (
         <div className="absolute right-0 z-10 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
           <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-            <a
-              href="/profile"
-              className="block px-4 py-2 text-sm text-gray-700"
-            >
-              Profile Settings
-            </a>
+            <Link href="/profile">
+              <div className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                Profile Settings
+              </div>
+            </Link>
             <button
               onClick={handleSignOut}
               className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"

@@ -4,6 +4,7 @@ import { Footer } from './footer';
 import Sidebar from './sidebar';
 import TimeLogger from './timelogger/page';
 import HealthChecker from './health-checker/page';
+import TimeLogTable from './timelogger/show-time-logs';
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -15,11 +16,23 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   const loadComponent = (component: string) => {
     switch (component) {
-      case 'A':
+      case 'home':
         setCurrentComponent(<TimeLogger />);
+        if(isOpen){
+          setIsOpen(false);
+        }
         break;
-      case 'B':
+      case 'healthcheck':
         setCurrentComponent(<HealthChecker />);
+        if(isOpen){
+          setIsOpen(false);
+        }
+        break;
+      case 'timelogshistory':
+        setCurrentComponent(<TimeLogTable />);
+        if(isOpen){
+          setIsOpen(false);
+        }
         break;
       default:
         setCurrentComponent(<TimeLogger />);
