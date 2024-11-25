@@ -15,7 +15,7 @@ export default defineConfig({
   schema: "./src/db/schema/index.ts",
   out: "./drizzle",
   dbCredentials: {
-    url: url,
-    authToken: authToken,
+    url: url,                                                                       
+    authToken: authToken,                                                                       
   }
-});
+});                                                                                                                                   

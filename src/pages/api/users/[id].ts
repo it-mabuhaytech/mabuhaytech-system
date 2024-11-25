@@ -1,18 +1,17 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { db } from '../../../db/db';
 import { eq } from 'drizzle-orm';
-import { usersTable } from '../../../db/schema/users';
+import { employeesTable } from '../../../db/schema/employees';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { id } = req.query;
-  console.log(id);
 
   if (req.method === 'GET') {
     try {
       const user = await db
         .select()
-        .from(usersTable)
-        .where(eq(usersTable.id, Number(id)))
+        .from(employeesTable)
+        .where(eq(employeesTable.userid, Number(id)))
         .execute();
 
       if (user.length === 0) {
@@ -29,3 +28,4 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }
+    
