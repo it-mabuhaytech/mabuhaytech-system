@@ -2,15 +2,15 @@ export const emailPatternRegex =
     /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/;
 
 export const roleOptions = [
-    { value: "admin", label: "Admin" },
-    { value: "it-head", label: "IT-Head" },
-    { value: "it-srdev", label: "IT-SrDev" },
-    { value: "it-jrdev", label: "IT-JrDev" },
-    { value: "head-designer", label: "Head Designer" },
-    { value: "senior-designer", label: "Senior Designer" },
-    { value: "junior-designer", label: "Junior Designer" },
-    { value: "public-relation", label: "Public Relation" },
-    { value: "human-resource", label: "Human Resource" },
+    { value: "Admin", label: "Admin" },
+    { value: "IT-Head", label: "IT-Head" },
+    { value: "It-Srdev", label: "IT-SrDev" },
+    { value: "It-Jrdev", label: "IT-JrDev" },
+    { value: "Head-Designer", label: "Head Designer" },
+    { value: "Senior-Designer", label: "Senior Designer" },
+    { value: "Junior-Designer", label: "Junior Designer" },
+    { value: "Public-Relation", label: "Public Relation" },
+    { value: "Human-Resource", label: "Human Resource" },
 ];
 
 export const departmentOptions = [

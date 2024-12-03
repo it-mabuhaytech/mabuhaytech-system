@@ -8,7 +8,7 @@ export async function checkUserRoleAdmin() {
 
     const userRole = await fetchUserRoleById(parseInt(loginUserId));
 
-    if (userRole === "Admin") return true;
+    if (userRole === "Admin" || userRole === "admin") return true;
 
     return false;
 }
