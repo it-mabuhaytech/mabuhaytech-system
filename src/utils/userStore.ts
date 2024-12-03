@@ -26,8 +26,9 @@ export const fetchUserById = async (id: number) => {
 export const fetchUserRoleById = async (id: number) => {
     const user = await db
         .select({ role: employeesTable.role })
-        .from(employeesTable)
-        .where(eq(employeesTable.id, id));
+        .from(usersTable)
+        .leftJoin(employeesTable, eq(usersTable.id, employeesTable.userid))
+        .where(eq(usersTable.id, id));
 
     return user[0].role;
 };
