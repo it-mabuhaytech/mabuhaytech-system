@@ -1,10 +1,9 @@
-let globalUserData: any[] = [];
+let globalUserData: string[] = [];
 
-export const setGlobalUserData = (data: any[]) => {
-  globalUserData = data;
+export const setGlobalUserData = (data: string[]) => {
+    globalUserData = data;
 };
 
 export const getGlobalUserData = () => {
-  
-  return globalUserData;
+    return globalUserData;
 };
