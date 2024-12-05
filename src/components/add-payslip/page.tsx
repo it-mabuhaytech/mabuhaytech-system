@@ -8,6 +8,7 @@ import {
   deductionFields,
   employeeFields,
   initialPayslipData,
+  payDateFields,
   summaryFields,
   yearToDateFields,
 } from "@/components/add-payslip/payslip";
@@ -23,7 +24,7 @@ const FormField = ({
   label: string;
   type: string;
   value: string | number;
-  onChange: (value: any) => void;
+  onChange: (value: string | number) => void;
 }) => (
   <div>
     <label className="block text-sm font-medium">{label}</label>
@@ -31,7 +32,11 @@ const FormField = ({
       type={type}
       value={value}
       onChange={(e) =>
-        onChange(type === "number" ? Number(e.target.value) : e.target.value)
+        onChange(
+          type === "number"
+            ? e.target.value?.replace(/^0+/, "") || "0"
+            : e.target.value
+        )
       }
       className="w-full border rounded-lg p-2"
       required
@@ -46,20 +51,23 @@ const PayslipsPage: React.FC = () => {
   const renderFields = (
     fields: PayslipField[],
     data: PayslipData,
-    setData: React.Dispatch<React.SetStateAction<PayslipData>>
+    setData: React.Dispatch<React.SetStateAction<PayslipData>>,
+    cols: number
   ) => (
-    <div className="grid grid-cols-2 gap-4">
+    <div className={`grid grid-cols-${cols} gap-4`}>
       {fields.map((field) => (
         <FormField
           key={field.name}
           {...field}
           value={data[field.name as keyof PayslipData]}
-          onChange={(value) =>
-            setData((prev) => ({
-              ...prev,
-              [field.name]: value,
-            }))
-          }
+          onChange={(value: string | number) => {
+            setData((prev) => {
+              return {
+                ...prev,
+                [field.name]: value,
+              };
+            });
+          }}
         />
       ))}
     </div>
@@ -81,76 +89,51 @@ const PayslipsPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-fit mx-auto p-6">
+    <div className="max-w-fit mx-auto">
       <form onSubmit={handleSubmit} className="flex flex-row gap-6">
         <div className="flex flex-row gap-4 bg-white shadow-lg border rounded-lg p-8">
-          <div className="space-y-6">
-            <div className="flex flex-row gap-4">
+          <div className="space-y-4">
+            <div className="flex flex-row gap-6">
               <div>
                 <h2 className="text-lg font-semibold mb-2 col-span-2">
                   Employee Information
                 </h2>
-                {renderFields(employeeFields, payslipData, setPayslipData)}
+                {renderFields(employeeFields, payslipData, setPayslipData, 2)}
               </div>
-
               <div>
                 <h2 className="text-lg font-semibold mb-2">Compensation</h2>
-                {renderFields(compensationFields, payslipData, setPayslipData)}
-              </div>
-            </div>
-
-            <div className="flex flex-row gap-4">
-              <div>
-                <h2 className="text-lg font-semibold mb-2">Deductions</h2>
-                {renderFields(deductionFields, payslipData, setPayslipData)}
-              </div>
-
-              <div>
-                <h2 className="text-lg font-semibold mb-2">Year-to-Date</h2>
-                {renderFields(yearToDateFields, payslipData, setPayslipData)}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-6 bg-white shadow-lg border rounded-lg p-8 max-h-fit">
-          <div className="flex flex-row gap-4">
-            <div className="space-y-4">
-              <h2 className="text-lg font-semibold mb-2">Summary</h2>
-              <div>
                 {renderFields(
-                  summaryFields.slice(0, 2),
+                  compensationFields,
                   payslipData,
-                  setPayslipData
+                  setPayslipData,
+                  2
                 )}
               </div>
+            </div>
+
+            <div>
+              <h2 className="text-lg font-semibold mb-2">Pay Cycle</h2>
+              {renderFields(payDateFields, payslipData, setPayslipData, 2)}
+            </div>
+
+            <div>
+              <h2 className="text-lg font-semibold mb-2">Deductions</h2>
+              {renderFields(deductionFields, payslipData, setPayslipData, 4)}
+            </div>
+
+            <div className="flex flex-col gap-6">
               <div>
-                {renderFields(
-                  summaryFields.slice(2, 4),
-                  payslipData,
-                  setPayslipData
-                )}
+                <h2 className="text-lg font-semibold mb-2">Summary</h2>
+                {renderFields(summaryFields, payslipData, setPayslipData, 2)}
               </div>
-              <div className="w-full">
-                <FormField
-                  name="netPay"
-                  label="Net Pay"
-                  type="number"
-                  value={payslipData.netPay}
-                  onChange={(value) =>
-                    setPayslipData((prev: any) => ({ ...prev, netPay: value }))
-                  }
-                />
-              </div>
+              <button
+                type="submit"
+                className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition"
+              >
+                Add Payslip
+              </button>
             </div>
           </div>
-
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition"
-          >
-            Generate Payslip
-          </button>
         </div>
       </form>
     </div>

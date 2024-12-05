@@ -14,6 +14,9 @@ export const employeeFields: PayslipField[] = [
   { name: "employeeId", label: "Employee ID", type: "text" },
   { name: "department", label: "Department", type: "text" },
   { name: "position", label: "Position", type: "text" },
+];
+
+export const payDateFields: PayslipField[] = [
   { name: "payBeginDate", label: "Pay Begin Date", type: "date" },
   { name: "payEndDate", label: "Pay End Date", type: "date" },
 ];
@@ -23,6 +26,7 @@ export const compensationFields: PayslipField[] = [
   { name: "allowance", label: "Allowance", type: "number" },
   { name: "overtime", label: "Overtime", type: "number" },
   { name: "holidayPay", label: "Holiday Pay", type: "number" },
+  // { name: "totalCompensations", label: "Total Compensations", type: "number" },
 ];
 
 export const deductionFields: PayslipField[] = [
@@ -34,6 +38,7 @@ export const deductionFields: PayslipField[] = [
   { name: "undertime", label: "Undertime", type: "number" },
   { name: "tax", label: "Tax", type: "number" },
   { name: "halfday", label: "Halfday", type: "number" },
+  // { name: "totalDeductions", label: "Total Deductions", type: "number" },
 ];
 
 export const yearToDateFields: PayslipField[] = [
@@ -46,11 +51,9 @@ export const yearToDateFields: PayslipField[] = [
 ];
 
 export const summaryFields: PayslipField[] = [
-  { name: "totalCompensations", label: "Total Compensations", type: "number" },
-  { name: "totalDeductions", label: "Total Deductions", type: "number" },
   { name: "absentDays", label: "Days absent", type: "number" },
   { name: "lateMinutes", label: "Late minutes", type: "number" },
-  { name: "netPay", label: "Net Pay", type: "number" },
+  // { name: "netPay", label: "Net Pay", type: "number" },
 ];
 
 export interface PayslipData {
@@ -58,6 +61,9 @@ export interface PayslipData {
   employeeName: string;
   department: string;
   position: string;
+
+  payBeginDate: string;
+  payEndDate: string;
 
   basicSalary: number;
   allowance: number;
@@ -86,8 +92,6 @@ export interface PayslipData {
   totalDeductions: number;
   netPay: number;
 
-  payBeginDate: string;
-  payEndDate: string;
   absentDays: number;
   lateMinutes: number;
 }
