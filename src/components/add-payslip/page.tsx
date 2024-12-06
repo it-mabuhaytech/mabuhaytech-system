@@ -105,30 +105,37 @@ const AddPayslipsPage: React.FC = () => {
     return error;
   };
 
-  const renderFields = (
-    fields: PayslipField[],
-    data: PayslipData,
-    setData: React.Dispatch<React.SetStateAction<PayslipData>>,
-    cols: number
-  ) => (
-    <div className={`grid grid-cols-${cols} gap-4`}>
-      {fields.map((field) => (
-        <FormField
-          key={field.name}
-          {...field}
-          value={data[field.name as keyof PayslipData]}
-          onChange={(value: string | number) => {
-            setData((prev) => ({
-              ...prev,
-              [field.name]: value,
-            }));
-            handleFieldValidation(field, value);
-          }}
-          error={errors[field.name]}
-        />
-      ))}
-    </div>
-  );
+  interface FieldsRendererProps {
+    fields: PayslipField[];
+    styles: string;
+  }
+
+  const FieldsRenderer: React.FC<FieldsRendererProps> = ({
+    fields,
+    styles,
+  }) => {
+    return (
+      <div className={styles}>
+        {fields.map((field) => {
+          return (
+            <FormField
+              key={field.name}
+              {...field}
+              value={payslipData[field.name as keyof PayslipData]}
+              onChange={(value: string | number) => {
+                setPayslipData((prev) => ({
+                  ...prev,
+                  [field.name]: value,
+                }));
+                handleFieldValidation(field, value);
+              }}
+              error={errors[field.name]}
+            />
+          );
+        })}
+      </div>
+    );
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -190,45 +197,50 @@ const AddPayslipsPage: React.FC = () => {
                 <h2 className="text-lg font-semibold mb-2 col-span-2">
                   Employee Information
                 </h2>
-                {renderFields(employeeFields, payslipData, setPayslipData, 2)}
+                <FieldsRenderer
+                  fields={employeeFields}
+                  styles={"grid grid-cols-2 gap-4"}
+                />
               </div>
               <div>
                 <h2 className="text-lg font-semibold mb-2">Compensation</h2>
-                {renderFields(
-                  compensationFields,
-                  payslipData,
-                  setPayslipData,
-                  2
-                )}
+                <FieldsRenderer
+                  fields={compensationFields}
+                  styles={"grid grid-cols-2 gap-4"}
+                />
               </div>
             </div>
 
             <div>
               <h2 className="text-lg font-semibold mb-2">Pay Cycle</h2>
-              {renderFields(
-                payDateFields.map((field) => ({
+              <FieldsRenderer
+                fields={payDateFields.map((field) => ({
                   ...field,
                   showBorderError:
                     (field.name === "payBeginDate" && errors.payEndDate) ||
                     (field.name === "payEndDate" && errors.payBeginDate)
                       ? true
                       : false,
-                })),
-                payslipData,
-                setPayslipData,
-                2
-              )}
+                }))}
+                styles={"grid grid-cols-2 gap-4"}
+              />
             </div>
 
             <div>
               <h2 className="text-lg font-semibold mb-2">Deductions</h2>
-              {renderFields(deductionFields, payslipData, setPayslipData, 4)}
+              <FieldsRenderer
+                fields={deductionFields}
+                styles={"grid grid-cols-4 gap-4"}
+              />
             </div>
 
             <div className="flex flex-col gap-6">
               <div>
                 <h2 className="text-lg font-semibold mb-2">Summary</h2>
-                {renderFields(summaryFields, payslipData, setPayslipData, 2)}
+                <FieldsRenderer
+                  fields={summaryFields}
+                  styles={"grid grid-cols-2 gap-4"}
+                />
               </div>
               <button
                 type="submit"
