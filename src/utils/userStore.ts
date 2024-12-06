@@ -4,9 +4,9 @@ import { eq } from "drizzle-orm";
 import { db } from "../db/db"; // Your database connection
 import { employeesTable } from "@/db/schema";
 
-let currentUser: any = null;
+let currentUser: number | null = null;
 
-export const setCurrentUser = (user: any) => {
+export const setCurrentUser = (user: number) => {
   currentUser = user;
 };
 
@@ -26,5 +26,6 @@ export const fetchUserRoleById = async (id: number) => {
     .from(usersTable)
     .leftJoin(employeesTable, eq(usersTable.id, employeesTable.userid))
     .where(eq(usersTable.id, id));
+
   return user[0].role;
 };

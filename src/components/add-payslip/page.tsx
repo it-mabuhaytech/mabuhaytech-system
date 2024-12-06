@@ -1,7 +1,5 @@
 import { useState } from "react";
 
-import withAuthAdmin from "@/hoc/withAuthAdmin";
-
 import {
   ErrorType,
   PayslipData,
@@ -244,4 +242,4 @@ const PayslipsPage: React.FC = () => {
   );
 };
 
-export default withAuthAdmin(PayslipsPage);
+export default PayslipsPage;
