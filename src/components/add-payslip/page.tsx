@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 
 import {
@@ -59,7 +61,7 @@ const FormField = ({
   );
 };
 
-const PayslipsPage: React.FC = () => {
+const AddPayslipsPage: React.FC = () => {
   const [payslipData, setPayslipData] =
     useState<PayslipData>(initialPayslipData);
   const [errors, setErrors] = useState<Record<string, ErrorType>>({});
@@ -242,4 +244,4 @@ const PayslipsPage: React.FC = () => {
   );
 };
 
-export default PayslipsPage;
+export default AddPayslipsPage;
