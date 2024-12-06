@@ -51,7 +51,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       linkName: "Register User",
     },
     {
-      componentName: "addpayslip",
+      componentName: "payslips",
       linkName: "Add Payslip",
     },
   ];
