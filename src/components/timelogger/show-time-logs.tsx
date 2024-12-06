@@ -1,3 +1,4 @@
+"use client";
 import { checkUserRoleAdmin } from "@/utils/checkAccess";
 import { getDateISOStringInLocalTime } from "@/utils/dates";
 import { changeFormatToCellsExemptTitle } from "@/utils/excel";
@@ -125,10 +126,10 @@ const TimeLogTable: React.FC = () => {
                         case 3:
                             acc[groupKey].log_out = log.logTime;
                             break;
-                        case 2:
+                        case 1:
                             acc[groupKey].lunch_break_in = log.logTime;
                             break;
-                        case 1:
+                        case 2:
                             acc[groupKey].lunch_break_out = log.logTime;
                             break;
                         default:

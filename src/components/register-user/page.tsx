@@ -1,4 +1,5 @@
-import withAuthAdmin from "@/hoc/withAuthAdmin";
+"use client";
+
 import { cn } from "@/lib/utils";
 import { useMemo, useRef, useState } from "react";
 import { RegisterData } from "./utils/types";
@@ -106,4 +107,4 @@ const RegisterUser: React.FC = () => {
     );
 };
 
-export default withAuthAdmin(RegisterUser);
+export default RegisterUser;
