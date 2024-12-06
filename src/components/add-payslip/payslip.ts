@@ -26,7 +26,6 @@ export const compensationFields: PayslipField[] = [
   { name: "allowance", label: "Allowance", type: "number" },
   { name: "overtime", label: "Overtime", type: "number" },
   { name: "holidayPay", label: "Holiday Pay", type: "number" },
-  // { name: "totalCompensations", label: "Total Compensations", type: "number" },
 ];
 
 export const deductionFields: PayslipField[] = [
@@ -38,7 +37,6 @@ export const deductionFields: PayslipField[] = [
   { name: "undertime", label: "Undertime", type: "number" },
   { name: "tax", label: "Tax", type: "number" },
   { name: "halfday", label: "Halfday", type: "number" },
-  // { name: "totalDeductions", label: "Total Deductions", type: "number" },
 ];
 
 export const yearToDateFields: PayslipField[] = [
@@ -53,7 +51,12 @@ export const yearToDateFields: PayslipField[] = [
 export const summaryFields: PayslipField[] = [
   { name: "absentDays", label: "Days absent", type: "number" },
   { name: "lateMinutes", label: "Late minutes", type: "number" },
-  // { name: "netPay", label: "Net Pay", type: "number" },
+];
+
+export const calculatedFields: PayslipField[] = [
+  { name: "totalCompensations", label: "Total Compensations", type: "number" },
+  { name: "totalDeductions", label: "Total Deductions", type: "number" },
+  { name: "netPay", label: "Net Pay", type: "number" },
 ];
 
 export interface PayslipData {
@@ -133,55 +136,4 @@ export const initialPayslipData: PayslipData = {
   payEndDate: "",
   absentDays: 0,
   lateMinutes: 0,
-};
-
-export type ErrorType = {
-  type: string;
-  message: string;
-};
-
-export const nonEmptyString = (value: string): ErrorType | null => {
-  if (!value || !/\S/.test(value)) {
-    return {
-      type: "required",
-      message: "Required field.",
-    };
-  }
-  return null;
-};
-
-export const nonNegativeNumber = (value: number): ErrorType | null => {
-  if (value < 0) {
-    return {
-      type: "number",
-      message: "Value must not be less than 0.",
-    };
-  }
-  return null;
-};
-
-export const noLateStartDate = (
-  payBeginDate: string,
-  payEndDate: string
-): ErrorType | null => {
-  if (new Date(payBeginDate) > new Date(payEndDate)) {
-    return {
-      type: "date",
-      message: "Start date cannot be later than end date.",
-    };
-  }
-  return null;
-};
-
-export const noEarlyEndDate = (
-  payEndDate: string,
-  payBeginDate: string
-): ErrorType | null => {
-  if (new Date(payEndDate) < new Date(payBeginDate)) {
-    return {
-      type: "date",
-      message: "End date cannot be earlier than start date.",
-    };
-  }
-  return null;
 };
