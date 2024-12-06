@@ -40,6 +40,10 @@ const Sidebar: React.FC<SidebarProps> = ({
             componentName: "healthcheck",
             linkName: "Health Checker",
         },
+        {
+            componentName: "leaverequest",
+            linkName: "Leave Request",
+        },
     ];
 
     const adminNavData: {

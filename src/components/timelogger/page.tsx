@@ -39,15 +39,72 @@ const TimeTracking: React.FC = () => {
         return () => clearInterval(interval);
     }, []);
 
-    const handleSaveLogs = (logType: number) => {
-        const time = new Date().toLocaleTimeString();
-        const date = new Date().toLocaleDateString();
-        updateLogs();
-        if (logType == 0) {
+  const handleSaveLogs = (logType: number) => {
+    const time = new Date().toLocaleTimeString();
+    const date = new Date().toLocaleDateString();
+    
+    if (logType == 0) {
+      setIsCheckedIn(true);
+      setIsLunchOut(false);
+      setIsLunchIn(true);
+      setIsCheckedOut(false);
+    } else if (logType == 1) {
+      setIsLunchOut(true);
+      setIsLunchIn(false);
+      setIsCheckedOut(true);
+    } else if (logType == 2) {
+      setIsLunchIn(true);
+      setIsCheckedOut(false);
+    } else if (logType == 3) {
+      setIsCheckedOut(true)
+    }
+    saveLogToDB(Number(userid),logType,time,date);
+  }
+
+  async function saveLogToDB(userid: number, logType: number, logTime: string, logDate: string) {
+    const response = await fetch('/api/timelogs/addTimeLog', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userid, logType, logTime, logDate }),
+    });
+    updateLogs();
+    console.log(response.status);
+  }
+
+  async function getUserTimeLogs() {
+    try{
+      const startDate = new Date().toLocaleDateString();
+      const endDate = new Date().toLocaleDateString();
+      const response = await fetch(`/api/timelogs/getUserTimeLogs?id=${userid}&startDate=${startDate}&endDate=${endDate}` , {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data: TimeLogs = await response.json()
+      setTimeLogs(data);
+      console.log(timeLogs);
+      return data;
+    }  catch (error: any) {
+      return error;
+    }
+  }
+
+  function updateLogs(){
+    getUserTimeLogs().then(function(result){
+      if(result.length > 0){
+        result.forEach((element: any) => {
+          if(element.logType == 0){
+            // if (checkInTime !== element.logTime){
+              setCheckInTime(element.logTime);
+            // }
             setIsCheckedIn(true);
             setIsLunchOut(false);
             setIsLunchIn(true);
             setIsCheckedOut(false);
+<<<<<<< HEAD
         } else if (logType == 1) {
             setIsLunchOut(true);
             setIsLunchIn(false);
@@ -73,6 +130,29 @@ const TimeTracking: React.FC = () => {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({ userid, logType, logTime, logDate }),
+=======
+          } else if (element.logType == 1) {
+            // if (lunchOutTime !== element.logTime){
+              setLunchOutTime(element.logTime);
+            // }
+            setIsLunchOut(true);
+            setIsLunchIn(false);
+            setIsCheckedOut(true);
+          } else if (element.logType == 2) {
+            // if (lunchInTime !== element.logTime){
+              setLunchInTime(element.logTime);
+            // }
+            setIsLunchIn(true);
+            setIsCheckedOut(false);
+          } else if (element.logType == 3) {
+            // if (checkOutTime !== element.logTime){
+              setCheckOutTime(element.logTime);
+            // }
+            setIsCheckedOut(true)
+          } else {
+            return "log type is not supported";
+          }
+>>>>>>> 7bf8ce4 (Add leave request features and page)
         });
 
         console.log(response.status);
