@@ -1,52 +1,109 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+
 import withAuthAdmin from "@/hoc/withAuthAdmin";
 
 import {
+  ErrorType,
   PayslipData,
   PayslipField,
   compensationFields,
   deductionFields,
   employeeFields,
   initialPayslipData,
+  noEarlyEndDate,
+  noLateStartDate,
+  nonEmptyString,
+  nonNegativeNumber,
   payDateFields,
   summaryFields,
   yearToDateFields,
 } from "@/components/add-payslip/payslip";
 
 const FormField = ({
-  name,
   label,
   type,
   value,
   onChange,
+  error,
+  showBorderError = false,
 }: {
-  name: string;
   label: string;
   type: string;
   value: string | number;
   onChange: (value: string | number) => void;
-}) => (
-  <div>
-    <label className="block text-sm font-medium">{label}</label>
-    <input
-      type={type}
-      value={value}
-      onChange={(e) =>
-        onChange(
-          type === "number"
-            ? e.target.value?.replace(/^0+/, "") || "0"
-            : e.target.value
-        )
-      }
-      className="w-full border rounded-lg p-2"
-      required
-    />
-  </div>
-);
+  error?: ErrorType;
+  showBorderError?: boolean;
+}) => {
+  const displayValue = type === "number" ? value.toString() : value;
+  return (
+    <div>
+      <label className="block text-sm font-medium">{label}</label>
+      <input
+        type={type}
+        value={displayValue}
+        onChange={(e) => {
+          const inputValue = e.target.value;
+          if (type === "number") {
+            const numValue = inputValue === "" ? 0 : Number(inputValue);
+            onChange(numValue);
+          } else {
+            onChange(inputValue);
+          }
+        }}
+        className={`w-full border rounded-lg p-2 ${
+          error || showBorderError ? "border-red-500" : ""
+        }`}
+      />
+      <label className="block text-sm text-red-500 font-medium min-h-5">
+        {error?.message}
+      </label>
+    </div>
+  );
+};
 
 const PayslipsPage: React.FC = () => {
   const [payslipData, setPayslipData] =
     useState<PayslipData>(initialPayslipData);
+  const [errors, setErrors] = useState<Record<string, ErrorType>>({});
+
+  const validateDateField = (
+    fieldName: string,
+    value: string,
+    payslipData: PayslipData
+  ): ErrorType | null => {
+    if (fieldName === "payBeginDate") {
+      return noLateStartDate(value, payslipData.payEndDate);
+    } else if (fieldName === "payEndDate") {
+      return noEarlyEndDate(value, payslipData.payBeginDate);
+    }
+    return null;
+  };
+
+  const handleFieldValidation = (
+    field: PayslipField,
+    value: string | number
+  ) => {
+    let error: ErrorType | null;
+
+    if (field.type === "date") {
+      error = validateDateField(field.name, value as string, payslipData);
+    } else if (field.type === "number") {
+      error = nonNegativeNumber(value as number);
+    } else {
+      error = nonEmptyString(value as string);
+    }
+
+    setErrors((prev) => {
+      if (error) {
+        return { ...prev, [field.name]: error };
+      }
+      const newErrors = { ...prev };
+      delete newErrors[field.name];
+      return newErrors;
+    });
+
+    return error;
+  };
 
   const renderFields = (
     fields: PayslipField[],
@@ -61,13 +118,13 @@ const PayslipsPage: React.FC = () => {
           {...field}
           value={data[field.name as keyof PayslipData]}
           onChange={(value: string | number) => {
-            setData((prev) => {
-              return {
-                ...prev,
-                [field.name]: value,
-              };
-            });
+            setData((prev) => ({
+              ...prev,
+              [field.name]: value,
+            }));
+            handleFieldValidation(field, value);
           }}
+          error={errors[field.name]}
         />
       ))}
     </div>
@@ -75,16 +132,51 @@ const PayslipsPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const response = await fetch("/api/payslips/create", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payslipData),
-    });
 
-    if (response.ok) {
-      setPayslipData(initialPayslipData);
+    const newErrors: Record<string, ErrorType> = {};
+
+    const startDateError = noLateStartDate(
+      payslipData.payBeginDate,
+      payslipData.payEndDate
+    );
+
+    const endDateError = noEarlyEndDate(
+      payslipData.payEndDate,
+      payslipData.payBeginDate
+    );
+
+    if (startDateError) {
+      newErrors.payBeginDate = startDateError;
+    } else if (endDateError) {
+      newErrors.payEndDate = endDateError;
+    }
+
+    Object.entries(payslipData).forEach(
+      ([key, value]: [string, string | number]) => {
+        const error =
+          typeof value === "string"
+            ? nonEmptyString(value)
+            : nonNegativeNumber(value);
+        if (error) {
+          newErrors[key] = error;
+        }
+      }
+    );
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length === 0) {
+      const response = await fetch("/api/payslips/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payslipData),
+      });
+
+      if (response.ok) {
+        setPayslipData(initialPayslipData);
+      }
     }
   };
 
@@ -92,7 +184,7 @@ const PayslipsPage: React.FC = () => {
     <div className="max-w-fit mx-auto">
       <form onSubmit={handleSubmit} className="flex flex-row gap-6">
         <div className="flex flex-row gap-4 bg-white shadow-lg border rounded-lg p-8">
-          <div className="space-y-4">
+          <div className="space-y-2">
             <div className="flex flex-row gap-6">
               <div>
                 <h2 className="text-lg font-semibold mb-2 col-span-2">
@@ -113,7 +205,19 @@ const PayslipsPage: React.FC = () => {
 
             <div>
               <h2 className="text-lg font-semibold mb-2">Pay Cycle</h2>
-              {renderFields(payDateFields, payslipData, setPayslipData, 2)}
+              {renderFields(
+                payDateFields.map((field) => ({
+                  ...field,
+                  showBorderError:
+                    (field.name === "payBeginDate" && errors.payEndDate) ||
+                    (field.name === "payEndDate" && errors.payBeginDate)
+                      ? true
+                      : false,
+                })),
+                payslipData,
+                setPayslipData,
+                2
+              )}
             </div>
 
             <div>
