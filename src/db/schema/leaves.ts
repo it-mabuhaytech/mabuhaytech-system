@@ -1,4 +1,4 @@
-import { sql, relations } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import { integer, sqliteTable, text, unique } from "drizzle-orm/sqlite-core";
 import { usersTable } from "./users";
 export const leavesTable = sqliteTable(
