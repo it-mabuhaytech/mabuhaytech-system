@@ -6,6 +6,7 @@ export async function GET(req: NextRequest) {
         // Handle successful login (e.g., set session)
         const cookiesStore = await cookies();
         cookiesStore.delete("authenticated");
+        cookiesStore.delete("userid");
 
         return NextResponse.json(
             {

@@ -27,6 +27,7 @@ const ProfileDropdown: React.FC = () => {
             const data = await response.json();
             console.log(data.message);
         } else {
+            localStorage.removeItem("userid");
             router.push(LINKS.login);
             console.log("Logout successful!");
         }

@@ -2,6 +2,31 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import BackButton from "../components/ui/backButton";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import UploadButtonPopover from "./upload-button";
+import { Separator } from "./ui/separator";
+import { Copy } from "lucide-react";
+import { GovermentIds } from "@/db/schema";
+import { cn } from "@/lib/utils";
+
+function CopyText({ text }: { text: string }) {
+    function copy(text: string) {
+        navigator.clipboard.writeText(text);
+    }
+    return (
+        <Copy
+            className="text-slate-400 hover:text-black cursor-pointer"
+            onClick={() => copy(text)}
+        />
+    );
+}
 
 interface Employee {
     userid: number;
@@ -12,7 +37,9 @@ interface Employee {
     email: string;
     role: string;
     department: string;
-    hiredDate: string;
+    hired_date: string;
+    employeeImage: string[];
+    goverment_ids?: Partial<GovermentIds>;
 }
 
 const ProfilePage = () => {
@@ -21,17 +48,8 @@ const ProfilePage = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        // // Check if the user is authenticated by checking localStorage
+    function fetchUser() {
         const userid = localStorage.getItem("userid");
-
-        // if (!token) {
-        //   // If no token exists, redirect to the login page
-        //   router.push('/login')
-        //   return
-        // }
-
-        // Fetch user profile data using the token
         const fetchUserProfile = async () => {
             try {
                 // Replace with your API endpoint
@@ -57,6 +75,10 @@ const ProfilePage = () => {
         };
 
         fetchUserProfile();
+    }
+
+    useEffect(() => {
+        fetchUser();
     }, [router]);
 
     if (loading) {
@@ -75,65 +97,117 @@ const ProfilePage = () => {
 
     return (
         <div className="max-w-4xl mx-auto p-6">
-            <div className="bg-white rounded-lg shadow-lg p-8">
-                <div className="flex justify-center mb-6">
-                    <img
-                        src="https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250"
-                        alt=""
-                        className="w-32 h-32 rounded-full border-4 border-blue-500"
-                    />
-                </div>
+            <div className="bg-white rounded-lg shadow-lg p-8 space-y-3">
+                <div className="flex flex-col gap-3">
+                    <p className="font-medium text-slate-500">
+                        Profile Picture
+                    </p>
 
-                <h1 className="text-3xl font-semibold text-gray-800 mb-6">
-                    Employee Profile
-                </h1>
-
-                <div className="space-y-4">
-                    <div className="flex justify-between">
-                        <span className="font-medium text-gray-700">
-                            Employee ID:
-                        </span>
-                        <span>{employee?.userid}</span>
-                    </div>
-
-                    <div className="flex justify-between">
-                        <span className="font-medium text-gray-700">
-                            Full Name:
-                        </span>
-                        <span>{employee?.first_name}</span>
-                    </div>
-
-                    <div className="flex justify-between">
-                        <span className="font-medium text-gray-700">Age:</span>
-                        <span>{employee?.age}</span>
-                    </div>
-
-                    <div className="flex justify-between">
-                        <span className="font-medium text-gray-700">
-                            Email:
-                        </span>
-                        <span>{employee?.email}</span>
-                    </div>
-
-                    <div className="flex justify-between">
-                        <span className="font-medium text-gray-700">Role:</span>
-                        <span>{employee?.role}</span>
-                    </div>
-
-                    <div className="flex justify-between">
-                        <span className="font-medium text-gray-700">
-                            Department:
-                        </span>
-                        <span>{employee?.department}</span>
-                    </div>
-
-                    <div className="flex justify-between">
-                        <span className="font-medium text-gray-700">
-                            Hired Date:
-                        </span>
-                        <span>{employee?.hiredDate}</span>
+                    <div className="flex gap-5">
+                        {employee?.employeeImage ? (
+                            <img
+                                src={employee.employeeImage[0]}
+                                alt=""
+                                className="w-32 h-32 rounded-full border-4 border-blue-500 object-cover object-top"
+                            />
+                        ) : (
+                            <div className="w-32 h-32 rounded-full border-4 border-blue-500 flex items-center justify-center bg-slate-200">
+                                <p className="text-3xl">
+                                    {`${employee?.first_name.trim()[0]} ${
+                                        employee?.last_name.trim()[0]
+                                    }`}
+                                </p>
+                            </div>
+                        )}
+                        <div className="flex justify-center items-center gap-5">
+                            <UploadButtonPopover
+                                fetchData={() => fetchUser()}
+                            />
+                        </div>
                     </div>
                 </div>
+                <Separator />
+                <div className="flex flex-col gap-1">
+                    <p className="text-slate-400">Full Name</p>
+                    <p>{`${employee?.first_name} ${employee?.last_name}`}</p>
+                </div>
+
+                <div className="flex flex-col gap-2">
+                    <p className="text-slate-400">Age</p>
+                    <p>{`${employee?.age}`}</p>
+                </div>
+
+                <div className="flex flex-col gap-2">
+                    <p className="text-slate-400">Email</p>
+                    <div className="flex gap-7">
+                        <p>{`${employee?.email}`}</p>
+                        <CopyText text={employee?.email ?? "-"} />
+                    </div>
+                </div>
+                <Separator />
+                <div className="flex justify-between">
+                    <div className="flex flex-col gap-2">
+                        <p className="text-slate-400">Employee ID</p>
+                        <p>{`${employee?.employeeid}`}</p>
+                    </div>
+                    <Dialog>
+                        <DialogTrigger
+                            className={cn(
+                                "bg-yellow-500 p-2 text-white rounded-md h-fit",
+                                !employee?.goverment_ids && "bg-yellow-500/50"
+                            )}
+                            disabled={!employee?.goverment_ids}
+                        >
+                            {`Goverment ID's`}
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>{`Goverment ID's`}</DialogTitle>
+                                <DialogDescription>
+                                    List of
+                                    {`goverment ID's`}
+                                </DialogDescription>
+                                <div className="grid grid-cols-2 gap-3">
+                                    {employee?.goverment_ids &&
+                                        Object.entries(
+                                            employee?.goverment_ids
+                                        ).map(([key, val]) => (
+                                            <div
+                                                className="flex flex-col gap-2"
+                                                key={key}
+                                            >
+                                                <p className="text-slate-400">
+                                                    {key}
+                                                </p>
+                                                <p className="flex gap-4">
+                                                    {val}
+                                                    <span>
+                                                        <CopyText text={val} />
+                                                    </span>
+                                                </p>
+                                            </div>
+                                        ))}
+                                </div>
+                            </DialogHeader>
+                        </DialogContent>
+                    </Dialog>
+                </div>
+
+                <div className="flex flex-col gap-2">
+                    <p className="text-slate-400">Role</p>
+                    <p>{`${employee?.role}`}</p>
+                </div>
+
+                <div className="flex flex-col gap-2">
+                    <p className="text-slate-400">Department</p>
+                    <p>{`${employee?.department}`}</p>
+                </div>
+
+                <div className="flex flex-col gap-2">
+                    <p className="text-slate-400">Hired Date</p>
+                    <p>{`${employee?.hired_date}`}</p>
+                </div>
+
                 {/* Back Button */}
                 <div className="mt-6 mb-4">
                     <BackButton />

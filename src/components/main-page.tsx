@@ -30,7 +30,7 @@ export default function MainPage({ children }: { children: React.ReactNode }) {
     };
 
     return (
-        <div className="flex h-screen w-screen flex-col bg-background">
+        <div className="flex h-screen w-screen flex-col bg-background overflow-x-hidden">
             <TopNav toggleSidebar={toggleSidebar} />
             <div className="flex-grow p-4 relative">
                 <Sidebar
