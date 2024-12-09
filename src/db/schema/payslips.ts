@@ -1,0 +1,28 @@
+import { sqliteTable, integer, text } from "drizzle-orm/sqlite-core";
+
+export const payslipsTable = sqliteTable("payslips", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  employeeId: text("employee_id").notNull(),
+  employeeName: text("employee_name").notNull(),
+  department: text("department").notNull(),
+  position: text("position").notNull(),
+  payBeginDate: text("pay_begin_date").notNull(),
+  payEndDate: text("pay_end_date").notNull(),
+  basicSalary: integer("basic_salary").notNull(),
+  allowance: integer("allowance").notNull(),
+  overtime: integer("overtime").notNull(),
+  holidayPay: integer("holiday_pay").notNull(),
+  sss: integer("sss").notNull(),
+  philhealth: integer("philhealth").notNull(),
+  pagibig: integer("pagibig").notNull(),
+  tax: integer("tax").notNull(),
+  absent: integer("absent").notNull(),
+  late: integer("late").notNull(),
+  undertime: integer("undertime").notNull(),
+  halfday: integer("halfday").notNull(),
+  totalCompensations: integer("total_compensations").notNull(),
+  totalDeductions: integer("total_deductions").notNull(),
+  netPay: integer("net_pay").notNull(),
+  createdAt: integer("created_at").notNull(),
+  updatedAt: integer("updated_at").notNull(),
+});

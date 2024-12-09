@@ -102,7 +102,7 @@ const AddPayslipsPage: React.FC = () => {
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
-      const response = await fetch("/api/payslips/create", {
+      const response = await fetch("/api/payslips/add", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
