@@ -5,4 +5,5 @@ export const LINKS = {
   timelogshistory: "/time-logs-history",
   registeruser: "/register",
   payslips: "/payslips",
+  viewpayslips: "/view-payslips",
 };
