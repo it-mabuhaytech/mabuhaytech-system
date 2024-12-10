@@ -16,7 +16,7 @@ export const employeesTable = sqliteTable("employees_table", {
     userid: integer("userid")
         .notNull()
         .references(() => usersTable.id),
-    employeeid: integer("employeeid").notNull(),
+    employeeid: text("employeeid").notNull(),
     employeeImage: text("employee_image", { mode: "json" }).$type<string[]>(),
     first_name: text("first_name").notNull(),
     last_name: text("last_name").notNull(),

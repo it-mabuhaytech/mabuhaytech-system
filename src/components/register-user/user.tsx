@@ -28,7 +28,7 @@ export default function UserForm({
     };
 
     return (
-        <div className="border p-2 rounded-md space-y-1">
+        <div className="border p-2 rounded-md space-y-1 w-[450px]">
             <p className="text-center flex items-start flex-col">
                 <span className="text-slate-400 text-xs">Step 1</span>
                 User Information

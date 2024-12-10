@@ -16,6 +16,11 @@ export async function POST(req: NextRequest) {
                 role,
                 department,
                 hireddate,
+                employee_id,
+                sss_id,
+                pagibig_id,
+                philhealth_id,
+                tin_id,
             } = await req.json();
 
             // create a user data
@@ -44,8 +49,14 @@ export async function POST(req: NextRequest) {
                 age: age,
                 role: role,
                 department: department,
-                employeeid: Math.floor(Math.random() * (1000 - 1 + 1) + 1),
+                employeeid: employee_id,
                 status: 1,
+                goverment_ids: {
+                    sssId: sss_id,
+                    pagibigId: pagibig_id,
+                    philhealthId: philhealth_id,
+                    tinId: tin_id,
+                },
                 hired_date: new Date(hireddate).toISOString(),
             });
 

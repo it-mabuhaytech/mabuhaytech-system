@@ -31,6 +31,11 @@ export const employeeDataTypeArray = [
     "role",
     "department",
     "hireddate",
+    "employee_id",
+    "sss_id",
+    "pagibig_id",
+    "philhealth_id",
+    "tin_id",
 ] as const;
 
 export type employeeDataType = (typeof employeeDataTypeArray)[number];

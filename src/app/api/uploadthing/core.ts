@@ -52,7 +52,7 @@ export const ourFileRouter = {
                     .set({
                         employeeImage: [file.url],
                     })
-                    .where(eq(employeesTable.employeeid, parseInt(id)));
+                    .where(eq(employeesTable.employeeid, id));
             }
 
             // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
