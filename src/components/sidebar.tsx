@@ -52,11 +52,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     },
     {
       componentName: "payslips",
-      linkName: "Add Payslip",
-    },
-    {
-      componentName: "viewpayslips",
-      linkName: "View Payslip",
+      linkName: "Payslips",
     },
   ];
 

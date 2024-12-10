@@ -7,7 +7,6 @@ export const navDataMap = (navName: string) => {
     timelogshistory: LINKS.timelogshistory,
     registeruser: LINKS.registeruser,
     payslips: LINKS.payslips,
-    viewpayslips: LINKS.viewpayslips,
   };
 
   return data[navName] || undefined;

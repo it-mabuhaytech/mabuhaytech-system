@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PayslipData } from "@/components/add-payslip/payslip";
+import { PayslipData } from "@/components/payslips/payslip";
 import {
   nonEmptyString,
   nonNegativeNumber,
   noLateStartDate,
   noEarlyEndDate,
-} from "@/components/add-payslip/validation";
+} from "@/components/payslips/validation";
 import { db } from "@/db/db";
 
 import { payslipsTable } from "@/db/schema/payslips";

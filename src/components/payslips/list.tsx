@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { checkUserRoleAdmin } from "@/utils/checkAccess";
 import { utils as XLSXUtils, writeFile as XLSXWriteFile } from "xlsx";
 
 import {
   MdOutlineArrowBackIos,
   MdOutlineArrowForwardIos,
 } from "react-icons/md";
+import { useRouter } from "next/navigation";
 
 type Payslip = {
   employeeId: string;
@@ -29,20 +29,14 @@ const tableConfig = [
   { header: "Net Pay", key: "netPay" },
 ] as const;
 
-const formatCell = (key: keyof Payslip, value: any): string => {
-  if (["basicSalary", "totalDeductions", "netPay"].includes(key)) {
-    return `₱${value}`;
-  }
-  return `${value}`;
-};
+const Payslips: React.FC = () => {
+  const router = useRouter();
 
-const ViewPayslips: React.FC = () => {
   const payslipsTable = useRef<HTMLTableElement | null>(null);
   const [payslips, setPayslips] = useState<Payslip[]>([]);
   const [filteredPayslips, setFilteredPayslips] = useState<Payslip[]>([]);
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
-  const [userRoleIsAdmin, setUserRoleIsAdmin] = useState<boolean>();
 
   const [currentPage, setCurrentPage] = useState(1);
   const entriesPerPage = 10;
@@ -54,14 +48,6 @@ const ViewPayslips: React.FC = () => {
     indexOfLastEntry
   );
   const totalPages = Math.ceil(filteredPayslips.length / entriesPerPage);
-
-  useEffect(() => {
-    const setRole = async () => {
-      const checkIfAdmin = await checkUserRoleAdmin();
-      setUserRoleIsAdmin(checkIfAdmin);
-    };
-    setRole();
-  }, []);
 
   useEffect(() => {
     const fetchPayslips = async () => {
@@ -150,15 +136,19 @@ const ViewPayslips: React.FC = () => {
         >
           Filter
         </button>
-        {userRoleIsAdmin && (
-          <button
-            disabled={filteredPayslips.length === 0}
-            onClick={handleGenerateReport}
-            className="mt-5 py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-blue-500/50"
-          >
-            Generate Payslip Report
-          </button>
-        )}
+        <button
+          disabled={filteredPayslips.length === 0}
+          onClick={handleGenerateReport}
+          className="mt-5 py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-blue-500/50"
+        >
+          Generate Payslip Report
+        </button>
+        <button
+          onClick={() => router.push("/payslips/add")}
+          className="mt-5 py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-blue-500/50"
+        >
+          Add Payslip
+        </button>
       </div>
 
       <table
@@ -213,4 +203,4 @@ const ViewPayslips: React.FC = () => {
   );
 };
 
-export default ViewPayslips;
+export default Payslips;

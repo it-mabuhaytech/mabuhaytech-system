@@ -1,10 +1,10 @@
-import AddPayslipsPage from "@/components/add-payslip/page";
+import Payslips from "@/components/payslips/list";
 import React from "react";
 
 const Page = () => {
   return (
     <>
-      <AddPayslipsPage />
+      <Payslips />
     </>
   );
 };
