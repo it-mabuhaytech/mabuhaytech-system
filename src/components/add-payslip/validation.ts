@@ -30,7 +30,7 @@ export const noLateStartDate = (
   if (new Date(payBeginDate) > new Date(payEndDate)) {
     return {
       type: "date",
-      message: "Start date cannot be later than end date.",
+      message: "Invalid start date.",
     };
   }
   return null;
@@ -43,7 +43,7 @@ export const noEarlyEndDate = (
   if (new Date(payEndDate) < new Date(payBeginDate)) {
     return {
       type: "date",
-      message: "End date cannot be earlier than start date.",
+      message: "Invalid end date.",
     };
   }
   return null;

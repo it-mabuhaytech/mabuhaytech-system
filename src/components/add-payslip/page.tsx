@@ -9,8 +9,7 @@ import {
   deductionFields,
   employeeFields,
   initialPayslipData,
-  payDateFields,
-  summaryFields,
+  yearToDateFields,
 } from "@/components/add-payslip/payslip";
 
 import { FieldsRenderer } from "./FieldsRenderer";
@@ -21,6 +20,7 @@ import {
   nonEmptyString,
   nonNegativeNumber,
 } from "./validation";
+import { calculateTotals } from "./calculations";
 
 const AddPayslipsPage: React.FC = () => {
   const [payslipData, setPayslipData] =
@@ -53,6 +53,22 @@ const AddPayslipsPage: React.FC = () => {
     } else {
       error = nonEmptyString(value as string);
     }
+
+    const newPayslipData = {
+      ...payslipData,
+      [field.name]: value,
+    };
+
+    const totals = calculateTotals(newPayslipData);
+
+    setPayslipData({
+      ...newPayslipData,
+      totalCompensations: totals.totalCompensations,
+      totalDeductions: totals.totalDeductions,
+      netPay: totals.netPay,
+      yearlyTax: totals.yearlyTax,
+      yearlySSS: totals.yearlySSS,
+    });
 
     setErrors((prev) => {
       if (error) {
@@ -101,27 +117,27 @@ const AddPayslipsPage: React.FC = () => {
 
     setErrors(newErrors);
 
-    if (Object.keys(newErrors).length === 0) {
-      const response = await fetch("/api/payslips/add", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payslipData),
-      });
+    if (Object.keys(newErrors).length > 0) return;
 
-      if (response.ok) {
-        setPayslipData(initialPayslipData);
-      }
+    const response = await fetch("/api/payslips/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payslipData),
+    });
+
+    if (response.ok) {
+      setPayslipData(initialPayslipData);
     }
   };
 
   return (
     <div className="max-w-fit mx-auto">
       <form onSubmit={handleSubmit} className="flex flex-row gap-6">
-        <div className="flex flex-row gap-4 bg-white shadow-lg border rounded-lg p-8">
+        <div className="flex flex-row gap-4 bg-white shadow-lg border rounded-lg p-5">
           <div className="space-y-2">
-            <div className="flex flex-row gap-6">
+            <div className="flex flex-row justify-between">
               <div>
                 <h2 className="text-lg font-semibold mb-2 col-span-2">
                   Employee Information
@@ -148,42 +164,11 @@ const AddPayslipsPage: React.FC = () => {
               </div>
             </div>
 
-            <div>
-              <h2 className="text-lg font-semibold mb-2">Pay Cycle</h2>
-              <FieldsRenderer
-                fields={payDateFields.map((field) => ({
-                  ...field,
-                  showBorderError:
-                    (field.name === "payBeginDate" && errors.payEndDate) ||
-                    (field.name === "payEndDate" && errors.payBeginDate)
-                      ? true
-                      : false,
-                }))}
-                styles={"grid grid-cols-2 gap-4"}
-                payslipData={payslipData}
-                errors={errors}
-                setPayslipData={setPayslipData}
-                handleFieldValidation={handleFieldValidation}
-              />
-            </div>
-
-            <div>
-              <h2 className="text-lg font-semibold mb-2">Deductions</h2>
-              <FieldsRenderer
-                fields={deductionFields}
-                styles={"grid grid-cols-4 gap-4"}
-                payslipData={payslipData}
-                errors={errors}
-                setPayslipData={setPayslipData}
-                handleFieldValidation={handleFieldValidation}
-              />
-            </div>
-
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-row gap-6">
               <div>
-                <h2 className="text-lg font-semibold mb-2">Summary</h2>
+                <h2 className="text-lg font-semibold mb-2">Deductions</h2>
                 <FieldsRenderer
-                  fields={summaryFields}
+                  fields={deductionFields}
                   styles={"grid grid-cols-2 gap-4"}
                   payslipData={payslipData}
                   errors={errors}
@@ -191,13 +176,26 @@ const AddPayslipsPage: React.FC = () => {
                   handleFieldValidation={handleFieldValidation}
                 />
               </div>
-              <button
-                type="submit"
-                className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition"
-              >
-                Add Payslip
-              </button>
+
+              <div>
+                <h2 className="text-lg font-semibold mb-2">Year-to-date</h2>
+                <FieldsRenderer
+                  fields={yearToDateFields}
+                  styles={"grid grid-cols-2 gap-4"}
+                  payslipData={payslipData}
+                  errors={errors}
+                  setPayslipData={setPayslipData}
+                  handleFieldValidation={handleFieldValidation}
+                />
+              </div>
             </div>
+
+            <button
+              type="submit"
+              className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition"
+            >
+              Add Payslip
+            </button>
           </div>
         </div>
       </form>

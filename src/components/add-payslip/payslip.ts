@@ -2,6 +2,7 @@ export interface PayslipField {
   name: string;
   label: string;
   type: "text" | "number" | "date";
+  auto: boolean;
 }
 
 export interface PayslipFormField extends PayslipField {
@@ -10,55 +11,58 @@ export interface PayslipFormField extends PayslipField {
 }
 
 export const employeeFields: PayslipField[] = [
-  { name: "employeeName", label: "Employee Name", type: "text" },
-  { name: "employeeId", label: "Employee ID", type: "text" },
-  { name: "department", label: "Department", type: "text" },
-  { name: "position", label: "Position", type: "text" },
-];
-
-export const payDateFields: PayslipField[] = [
-  { name: "payBeginDate", label: "Pay Begin Date", type: "date" },
-  { name: "payEndDate", label: "Pay End Date", type: "date" },
+  { name: "employeeName", label: "Employee Name", type: "text", auto: false },
+  { name: "employeeId", label: "Employee ID", type: "text", auto: false },
+  { name: "department", label: "Department", type: "text", auto: false },
+  { name: "position", label: "Position", type: "text", auto: false },
+  { name: "payBeginDate", label: "Pay Begin Date", type: "date", auto: false },
+  { name: "payEndDate", label: "Pay End Date", type: "date", auto: false },
 ];
 
 export const compensationFields: PayslipField[] = [
-  { name: "basicSalary", label: "Basic Salary", type: "number" },
-  { name: "allowance", label: "Allowance", type: "number" },
-  { name: "overtime", label: "Overtime", type: "number" },
-  { name: "holidayPay", label: "Holiday Pay", type: "number" },
+  { name: "basicSalary", label: "Basic Salary", type: "number", auto: false },
+  { name: "allowance", label: "Allowance", type: "number", auto: false },
+  { name: "overtime", label: "Overtime", type: "number", auto: false },
+  { name: "holidayPay", label: "Holiday Pay", type: "number", auto: false },
+  {
+    name: "totalCompensations",
+    label: "Total Compensations",
+    type: "number",
+    auto: true,
+  },
+  {
+    name: "totalDeductions",
+    label: "Total Deductions",
+    type: "number",
+    auto: true,
+  },
 ];
 
 export const deductionFields: PayslipField[] = [
-  { name: "sss", label: "SSS", type: "number" },
-  { name: "absent", label: "Absent", type: "number" },
-  { name: "philhealth", label: "Philhealth", type: "number" },
-  { name: "late", label: "Late", type: "number" },
-  { name: "pagibig", label: "Pag-ibig", type: "number" },
-  { name: "undertime", label: "Undertime", type: "number" },
-  { name: "tax", label: "Tax", type: "number" },
-  { name: "halfday", label: "Halfday", type: "number" },
+  { name: "sss", label: "SSS", type: "number", auto: false },
+  { name: "absent", label: "Absent", type: "number", auto: false },
+  { name: "philhealth", label: "Philhealth", type: "number", auto: false },
+  { name: "late", label: "Late", type: "number", auto: false },
+  { name: "pagibig", label: "Pag-ibig", type: "number", auto: false },
+  { name: "undertime", label: "Undertime", type: "number", auto: false },
+  { name: "tax", label: "Tax", type: "number", auto: false },
+  { name: "halfday", label: "Halfday", type: "number", auto: false },
 ];
 
 export const yearToDateFields: PayslipField[] = [
-  { name: "taxableGross", label: "Taxable Gross", type: "number" },
-  { name: "phic", label: "PHIC", type: "number" },
-  { name: "yearlyTax", label: "Tax", type: "number" },
-  { name: "hdmf", label: "HDMF", type: "number" },
-  { name: "yearlySSS", label: "SSS", type: "number" },
-  { name: "grossIncome", label: "Gross Income", type: "number" },
-];
-
-export const summaryFields: PayslipField[] = [
-  { name: "absentDays", label: "Days absent", type: "number" },
-  { name: "lateMinutes", label: "Late minutes", type: "number" },
+  { name: "taxableGross", label: "Taxable Gross", type: "number", auto: false },
+  { name: "phic", label: "PHIC", type: "number", auto: false },
+  { name: "yearlyTax", label: "Tax", type: "number", auto: true },
+  { name: "hdmf", label: "HDMF", type: "number", auto: false },
+  { name: "yearlySSS", label: "SSS", type: "number", auto: true },
+  { name: "grossIncome", label: "Gross Income", type: "number", auto: false },
+  { name: "absentDays", label: "Days absent", type: "number", auto: false },
+  { name: "lateMinutes", label: "Late minutes", type: "number", auto: false },
 ];
 
 export const calculatedFields: PayslipField[] = [
-  { name: "totalCompensations", label: "Total Compensations", type: "number" },
-  { name: "totalDeductions", label: "Total Deductions", type: "number" },
-  { name: "netPay", label: "Net Pay", type: "number" },
+  { name: "netPay", label: "Net Pay", type: "number", auto: true },
 ];
-
 export interface PayslipData {
   employeeId: string;
   employeeName: string;

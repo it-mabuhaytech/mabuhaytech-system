@@ -7,6 +7,7 @@ export const FormField = ({
   onChange,
   error,
   showBorderError = false,
+  auto,
 }: {
   label: string;
   type: string;
@@ -14,6 +15,7 @@ export const FormField = ({
   onChange: (value: string | number) => void;
   error?: ErrorType;
   showBorderError?: boolean;
+  auto?: boolean;
 }) => {
   const displayValue = type === "number" ? value.toString() : value;
   return (
@@ -21,6 +23,7 @@ export const FormField = ({
       <label className="block text-sm font-medium">{label}</label>
       <input
         type={type}
+        disabled={auto}
         value={displayValue}
         onChange={(e) => {
           const inputValue = e.target.value;
@@ -33,7 +36,7 @@ export const FormField = ({
         }}
         className={`w-full border rounded-lg p-2 ${
           error || showBorderError ? "border-red-500" : ""
-        }`}
+        } disabled:cursor-not-allowed`}
       />
       <label className="block text-sm text-red-500 font-medium min-h-5">
         {error?.message}
