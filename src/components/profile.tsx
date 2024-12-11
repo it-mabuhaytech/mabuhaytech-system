@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import BackButton from "../components/ui/backButton";
 import {
@@ -10,6 +10,18 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
 import UploadButtonPopover from "./upload-button";
 import { Separator } from "./ui/separator";
 import { Copy, Pencil, X } from "lucide-react";
@@ -58,7 +70,11 @@ const ProfileText = ({
     withEdit?: boolean;
     fetchUser?: () => void;
 }) => {
+    const submitButtonRef = useRef<HTMLInputElement | null>(null);
+
     const [edit, setEdit] = useState<boolean>(false);
+
+    const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
 
     const [data, setData] = useState<string | number | undefined | null>(value);
 
@@ -75,6 +91,8 @@ const ProfileText = ({
 
             if (response.ok && fetchUser) {
                 fetchUser();
+                setEdit(false);
+                setOpenConfirmation(false);
             }
 
             console.log(response.status);
@@ -84,35 +102,81 @@ const ProfileText = ({
     return (
         <div className="flex flex-col gap-1">
             <p className="text-slate-400">{label}</p>
-            <div className="flex gap-7 items-center">
+            <div className="flex gap-4 items-center">
                 {edit ? (
-                    <form
-                        onSubmit={handleFormAction}
-                        className="border-2 rounded-md p-1 flex"
-                    >
-                        <input
-                            type="text"
-                            value={data?.toString()}
-                            onChange={(e) => setData(e.target.value)}
-                            className="border-none focus:outline-0"
-                        />
+                    <>
+                        <form
+                            onSubmit={handleFormAction}
+                            className="border-2 rounded-md p-1 flex"
+                        >
+                            <input
+                                type="text"
+                                value={data?.toString()}
+                                onChange={(e) => setData(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.code === "Enter") {
+                                        e.preventDefault();
+                                        setOpenConfirmation(true);
+                                    }
+                                }}
+                                className="border-none focus:outline-0"
+                            />
+                            <AlertDialog
+                                open={openConfirmation}
+                                onOpenChange={setOpenConfirmation}
+                            >
+                                <AlertDialogTrigger className="sr-only">
+                                    Open
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>
+                                            Change Password
+                                        </AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            This action cannot be undone. This
+                                            will permanently change your
+                                            password.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>
+                                            Cancel
+                                        </AlertDialogCancel>
+                                        <AlertDialogAction
+                                            onClick={() => {
+                                                if (submitButtonRef.current) {
+                                                    submitButtonRef.current.click();
+                                                }
+                                            }}
+                                        >
+                                            Continue
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                            <input
+                                ref={submitButtonRef}
+                                type="submit"
+                                className="hidden"
+                            />
+                        </form>
                         <X
                             onClick={() => setEdit(false)}
-                            className="cursor-pointer"
+                            className="cursor-pointer text-slate-400 hover:text-red-600"
                         />
-                    </form>
+                    </>
                 ) : (
                     <>
                         <p>{value}</p>
+                        {withEdit !== false && !edit && (
+                            <Pencil
+                                onClick={() => setEdit(true)}
+                                className="cursor-pointer text-slate-400 hover:text-primary"
+                            />
+                        )}
                         {withCopyText && <CopyText text={value ?? "-"} />}
                     </>
-                )}
-
-                {withEdit !== false && !edit && (
-                    <Pencil
-                        onClick={() => setEdit(true)}
-                        className="cursor-pointer"
-                    />
                 )}
             </div>
         </div>
@@ -222,12 +286,6 @@ const ProfilePage = () => {
                     withEdit={true}
                     fetchUser={() => fetchUser()}
                 />
-                <div className="flex flex-col gap-2">
-                    <p className="text-slate-400">Password</p>
-                    <div className="flex gap-7">
-                        <p>{`${employee?.password}`}</p>
-                    </div>
-                </div>
                 <Separator />
                 <div className="flex justify-between">
                     <ProfileText
