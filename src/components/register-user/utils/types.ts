@@ -8,4 +8,9 @@ export type RegisterData = Partial<{
     role: string;
     department: string;
     hireddate: Date;
+    employee_id: string;
+    sss_id: string;
+    pagibig_id: string;
+    philhealth_id: string;
+    tin_id: string;
 }>;

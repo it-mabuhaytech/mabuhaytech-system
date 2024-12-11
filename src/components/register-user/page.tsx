@@ -94,7 +94,7 @@ const RegisterUser: React.FC = () => {
             <form
                 ref={formRef}
                 onSubmit={handleFormAction}
-                className="flex flex-col gap-2  w-[450px]"
+                className="flex flex-col gap-2"
             >
                 {nav === "user" && (
                     <UserForm data={data} setData={setData} setNav={setNav} />

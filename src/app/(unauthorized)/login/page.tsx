@@ -28,7 +28,11 @@ const Login = () => {
             const data = await response.json();
             if (!data.id) {
                 console.log("User ID is required");
+                router.refresh();
             }
+
+            localStorage.setItem("userid", data.id);
+
             router.push("/");
             console.log("Login successful!");
         }
