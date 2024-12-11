@@ -8,6 +8,7 @@ import {
   MdOutlineArrowForwardIos,
 } from "react-icons/md";
 import { useRouter } from "next/navigation";
+import { checkUserRoleAdmin } from "@/utils/checkAccess";
 
 type Payslip = {
   employeeId: string;
@@ -37,6 +38,23 @@ const Payslips: React.FC = () => {
   const [filteredPayslips, setFilteredPayslips] = useState<Payslip[]>([]);
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
+  const userid =
+    typeof window !== "undefined" ? localStorage.getItem("userid") : null;
+
+  console.log(userid);
+
+  const [isAdmin, setIsAdmin] = useState<boolean>();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const setRole = async () => {
+      const isAdmin = await checkUserRoleAdmin();
+      setIsAdmin(isAdmin);
+      setIsLoading(false);
+      return isAdmin;
+    };
+    setRole();
+  }, []);
 
   const [currentPage, setCurrentPage] = useState(1);
   const entriesPerPage = 10;
@@ -52,7 +70,11 @@ const Payslips: React.FC = () => {
   useEffect(() => {
     const fetchPayslips = async () => {
       try {
-        const response = await fetch(`/api/payslips/add`, {
+        const endpoint = isAdmin
+          ? `/api/payslips/add`
+          : `/api/payslips/add?userid=${userid}`;
+
+        const response = await fetch(endpoint, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -62,14 +84,15 @@ const Payslips: React.FC = () => {
         const data = await response.json();
         setPayslips(data);
         setFilteredPayslips(data);
-        console.log(data);
       } catch (error) {
         console.error("Error fetching payslips:", error);
       }
     };
 
-    fetchPayslips();
-  }, []);
+    if (!isLoading) {
+      fetchPayslips();
+    }
+  }, [isLoading, isAdmin, userid]);
 
   const handleFilter = () => {
     if (startDate && endDate) {
@@ -136,19 +159,23 @@ const Payslips: React.FC = () => {
         >
           Filter
         </button>
-        <button
-          disabled={filteredPayslips.length === 0}
-          onClick={handleGenerateReport}
-          className="mt-5 py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-blue-500/50"
-        >
-          Generate Payslip Report
-        </button>
-        <button
-          onClick={() => router.push("/payslips/add")}
-          className="mt-5 py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-blue-500/50"
-        >
-          Add Payslip
-        </button>
+        {!isLoading && isAdmin && (
+          <>
+            <button
+              disabled={filteredPayslips.length === 0}
+              onClick={handleGenerateReport}
+              className="mt-5 py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-blue-500/50"
+            >
+              Generate Payslip Report
+            </button>
+            <button
+              onClick={() => router.push("/payslips/add")}
+              className="mt-5 py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-blue-500/50"
+            >
+              Add Payslip
+            </button>
+          </>
+        )}
       </div>
 
       <table

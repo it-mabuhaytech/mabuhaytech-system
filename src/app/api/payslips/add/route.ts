@@ -9,7 +9,7 @@ import {
 import { db } from "@/db/db";
 
 import { payslipsTable } from "@/db/schema/payslips";
-import { desc } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 
 export const POST = async (req: NextRequest) => {
   if (req.method !== "POST") {
@@ -138,12 +138,16 @@ export const POST = async (req: NextRequest) => {
   }
 };
 
-export const GET = async () => {
+export const GET = async (req: NextRequest) => {
   try {
+    const { searchParams } = new URL(req.url);
+    const userid = searchParams.get("userid");
+
     const payslips = await db
       .select()
       .from(payslipsTable)
-      .orderBy(desc(payslipsTable.createdAt));
+      .orderBy(desc(payslipsTable.createdAt))
+      .where(userid ? eq(payslipsTable.employeeId, userid) : undefined);
 
     return NextResponse.json(payslips, { status: 200 });
   } catch (error) {

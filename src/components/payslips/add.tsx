@@ -21,8 +21,11 @@ import {
   nonNegativeNumber,
 } from "./validation";
 import { calculateTotals } from "./calculations";
+import { useRouter } from "next/navigation";
 
 const AddPayslips: React.FC = () => {
+  const router = useRouter();
+
   const [payslipData, setPayslipData] =
     useState<PayslipData>(initialPayslipData);
   const [errors, setErrors] = useState<Record<string, ErrorType>>({});
@@ -128,7 +131,7 @@ const AddPayslips: React.FC = () => {
     });
 
     if (response.ok) {
-      setPayslipData(initialPayslipData);
+      router.push("/payslips");
     }
   };
 
