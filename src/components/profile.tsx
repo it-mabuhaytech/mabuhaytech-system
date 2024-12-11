@@ -12,21 +12,9 @@ import {
 } from "@/components/ui/dialog";
 import UploadButtonPopover from "./upload-button";
 import { Separator } from "./ui/separator";
-import { Copy } from "lucide-react";
+import { Copy, Pencil, X } from "lucide-react";
 import { GovermentIds } from "@/db/schema";
 import { cn } from "@/lib/utils";
-
-function CopyText({ text }: { text: string }) {
-    function copy(text: string) {
-        navigator.clipboard.writeText(text);
-    }
-    return (
-        <Copy
-            className="text-slate-400 hover:text-black cursor-pointer"
-            onClick={() => copy(text)}
-        />
-    );
-}
 
 interface Employee {
     userid: number;
@@ -35,12 +23,101 @@ interface Employee {
     last_name: string;
     age: number;
     email: string;
+    password: string;
     role: string;
     department: string;
     hired_date: string;
     employeeImage: string[];
     goverment_ids?: Partial<GovermentIds>;
 }
+
+function CopyText({ text }: { text: string | number }) {
+    function copy(text: string) {
+        navigator.clipboard.writeText(text);
+    }
+    return (
+        <Copy
+            className="text-slate-400 hover:text-black cursor-pointer"
+            onClick={() => copy(text.toString())}
+        />
+    );
+}
+
+const ProfileText = ({
+    label,
+    value,
+    withCopyText = false,
+    name,
+    withEdit = false,
+    fetchUser,
+}: {
+    label: string;
+    value: string | number | undefined | null;
+    withCopyText?: boolean;
+    name?: string;
+    withEdit?: boolean;
+    fetchUser?: () => void;
+}) => {
+    const [edit, setEdit] = useState<boolean>(false);
+
+    const [data, setData] = useState<string | number | undefined | null>(value);
+
+    const handleFormAction = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (name) {
+            const response = await fetch("/api/users/update", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ [name]: data }),
+            });
+
+            if (response.ok && fetchUser) {
+                fetchUser();
+            }
+
+            console.log(response.status);
+        }
+    };
+
+    return (
+        <div className="flex flex-col gap-1">
+            <p className="text-slate-400">{label}</p>
+            <div className="flex gap-7 items-center">
+                {edit ? (
+                    <form
+                        onSubmit={handleFormAction}
+                        className="border-2 rounded-md p-1 flex"
+                    >
+                        <input
+                            type="text"
+                            value={data?.toString()}
+                            onChange={(e) => setData(e.target.value)}
+                            className="border-none focus:outline-0"
+                        />
+                        <X
+                            onClick={() => setEdit(false)}
+                            className="cursor-pointer"
+                        />
+                    </form>
+                ) : (
+                    <>
+                        <p>{value}</p>
+                        {withCopyText && <CopyText text={value ?? "-"} />}
+                    </>
+                )}
+
+                {withEdit !== false && !edit && (
+                    <Pencil
+                        onClick={() => setEdit(true)}
+                        className="cursor-pointer"
+                    />
+                )}
+            </div>
+        </div>
+    );
+};
 
 const ProfilePage = () => {
     const router = useRouter();
@@ -127,29 +204,36 @@ const ProfilePage = () => {
                     </div>
                 </div>
                 <Separator />
-                <div className="flex flex-col gap-1">
-                    <p className="text-slate-400">Full Name</p>
-                    <p>{`${employee?.first_name} ${employee?.last_name}`}</p>
-                </div>
-
+                <ProfileText
+                    label="Full Name"
+                    value={`${employee?.first_name} ${employee?.last_name}`}
+                />
+                <ProfileText label="Age" value={employee?.age} />
+                <ProfileText
+                    label="Email"
+                    value={employee?.email}
+                    withCopyText={true}
+                />
+                <ProfileText
+                    label="Password"
+                    value={employee?.password}
+                    withCopyText={true}
+                    name="password"
+                    withEdit={true}
+                    fetchUser={() => fetchUser()}
+                />
                 <div className="flex flex-col gap-2">
-                    <p className="text-slate-400">Age</p>
-                    <p>{`${employee?.age}`}</p>
-                </div>
-
-                <div className="flex flex-col gap-2">
-                    <p className="text-slate-400">Email</p>
+                    <p className="text-slate-400">Password</p>
                     <div className="flex gap-7">
-                        <p>{`${employee?.email}`}</p>
-                        <CopyText text={employee?.email ?? "-"} />
+                        <p>{`${employee?.password}`}</p>
                     </div>
                 </div>
                 <Separator />
                 <div className="flex justify-between">
-                    <div className="flex flex-col gap-2">
-                        <p className="text-slate-400">Employee ID</p>
-                        <p>{`${employee?.employeeid}`}</p>
-                    </div>
+                    <ProfileText
+                        label="Employee ID"
+                        value={employee?.employeeid}
+                    />
                     <Dialog>
                         <DialogTrigger
                             className={cn(
@@ -172,42 +256,21 @@ const ProfilePage = () => {
                                         Object.entries(
                                             employee?.goverment_ids
                                         ).map(([key, val]) => (
-                                            <div
-                                                className="flex flex-col gap-2"
+                                            <ProfileText
                                                 key={key}
-                                            >
-                                                <p className="text-slate-400">
-                                                    {key}
-                                                </p>
-                                                <p className="flex gap-4">
-                                                    {val}
-                                                    <span>
-                                                        <CopyText text={val} />
-                                                    </span>
-                                                </p>
-                                            </div>
+                                                label={key}
+                                                value={val}
+                                                withCopyText={true}
+                                            />
                                         ))}
                                 </div>
                             </DialogHeader>
                         </DialogContent>
                     </Dialog>
                 </div>
-
-                <div className="flex flex-col gap-2">
-                    <p className="text-slate-400">Role</p>
-                    <p>{`${employee?.role}`}</p>
-                </div>
-
-                <div className="flex flex-col gap-2">
-                    <p className="text-slate-400">Department</p>
-                    <p>{`${employee?.department}`}</p>
-                </div>
-
-                <div className="flex flex-col gap-2">
-                    <p className="text-slate-400">Hired Date</p>
-                    <p>{`${employee?.hired_date}`}</p>
-                </div>
-
+                <ProfileText label="Role" value={employee?.role} />
+                <ProfileText label="Department" value={employee?.department} />
+                <ProfileText label="Hired Date" value={employee?.hired_date} />
                 {/* Back Button */}
                 <div className="mt-6 mb-4">
                     <BackButton />
