@@ -40,6 +40,10 @@ const Sidebar: React.FC<SidebarProps> = ({
       componentName: "healthcheck",
       linkName: "Health Checker",
     },
+    {
+      componentName: "payslips",
+      linkName: "Payslips",
+    },
   ];
 
   const adminNavData: {
@@ -49,10 +53,6 @@ const Sidebar: React.FC<SidebarProps> = ({
     {
       componentName: "registeruser",
       linkName: "Register User",
-    },
-    {
-      componentName: "payslips",
-      linkName: "Add Payslip",
     },
   ];
 

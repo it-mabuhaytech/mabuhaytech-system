@@ -1,7 +1,7 @@
 import { sqliteTable, integer, text } from "drizzle-orm/sqlite-core";
 
 export const payslipsTable = sqliteTable("payslips", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+  payslipId: text("payslip_id").primaryKey(),
   employeeId: text("employee_id").notNull(),
   employeeName: text("employee_name").notNull(),
   department: text("department").notNull(),
@@ -20,9 +20,18 @@ export const payslipsTable = sqliteTable("payslips", {
   late: integer("late").notNull(),
   undertime: integer("undertime").notNull(),
   halfday: integer("halfday").notNull(),
+  taxableGross: integer("taxable_gross").notNull(),
+  yearlyTax: integer("yearly_tax").notNull(),
+  yearlySSS: integer("yearly_sss").notNull(),
+  phic: integer("phic").notNull(),
+  hdmf: integer("hdmf").notNull(),
+  grossIncome: integer("gross_income").notNull(),
+  deductions: integer("deductions").notNull(),
   totalCompensations: integer("total_compensations").notNull(),
   totalDeductions: integer("total_deductions").notNull(),
   netPay: integer("net_pay").notNull(),
+  absentDays: integer("absent_days").notNull(),
+  lateMinutes: integer("late_minutes").notNull(),
   createdAt: integer("created_at").notNull(),
   updatedAt: integer("updated_at").notNull(),
 });
