@@ -107,8 +107,15 @@ export interface PayslipData {
   lateMinutes: number;
 }
 
+export const generatePayslipId = (): string => {
+  const set = "abcdefghijklmnopqrstuvwxyz0123456789";
+  const segment = customAlphabet(set, 8);
+
+  return `${segment()}-${segment()}-${segment()}-${segment()}`;
+};
+
 export const initialPayslipData: PayslipData = {
-  payslipId: "",
+  payslipId: generatePayslipId(),
 
   employeeId: "",
   employeeName: "",
@@ -146,11 +153,4 @@ export const initialPayslipData: PayslipData = {
   payEndDate: "",
   absentDays: 0,
   lateMinutes: 0,
-};
-
-export const generatePayslipId = (): string => {
-  const set = "abcdefghijklmnopqrstuvwxyz0123456789";
-  const segment = customAlphabet(set, 8);
-
-  return `${segment()}-${segment()}-${segment()}-${segment()}`;
 };

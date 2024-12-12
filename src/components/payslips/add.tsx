@@ -9,7 +9,6 @@ import {
   compensationFields,
   deductionFields,
   employeeFields,
-  generatePayslipId,
   initialPayslipData,
   yearToDateFields,
 } from "@/components/payslips/payslip";
@@ -120,11 +119,6 @@ const AddPayslips: React.FC = () => {
     );
 
     setErrors(newErrors);
-
-    setPayslipData({
-      ...payslipData,
-      payslipId: generatePayslipId(),
-    });
 
     if (Object.keys(newErrors).length > 0) return;
 
