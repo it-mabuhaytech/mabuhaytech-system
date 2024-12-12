@@ -35,7 +35,7 @@ const PayslipDetail: React.FC = () => {
   useEffect(() => {
     const fetchPayslip = async () => {
       const response = await fetch(`/api/payslips/${params.id}`);
-      response.status === 404 && setNotFound(true);
+      if (response.status === 404) setNotFound(true);
       const data = await response.json();
       setPayslipData(data);
       setIsLoading(false);
