@@ -13,6 +13,7 @@ interface FieldsRendererProps {
     field: PayslipField,
     value: string | number
   ) => ErrorType | null;
+  auto?: boolean;
 }
 
 export const FieldsRenderer: React.FC<FieldsRendererProps> = ({
@@ -22,10 +23,12 @@ export const FieldsRenderer: React.FC<FieldsRendererProps> = ({
   errors,
   setPayslipData,
   handleFieldValidation,
+  auto,
 }) => {
   return (
     <div className={styles}>
       {fields.map((field) => {
+        console.log(field);
         return (
           <FormField
             key={field.name}
@@ -39,6 +42,7 @@ export const FieldsRenderer: React.FC<FieldsRendererProps> = ({
               handleFieldValidation(field, value);
             }}
             error={errors[field.name]}
+            auto={auto}
           />
         );
       })}

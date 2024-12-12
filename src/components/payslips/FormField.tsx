@@ -17,7 +17,8 @@ export const FormField = ({
   showBorderError?: boolean;
   auto?: boolean;
 }) => {
-  const displayValue = type === "number" ? value.toString() : value;
+  const displayValue =
+    type === "number" ? (value ?? 0).toString() : value ?? "";
   return (
     <div>
       <label className="block text-sm font-medium">{label}</label>

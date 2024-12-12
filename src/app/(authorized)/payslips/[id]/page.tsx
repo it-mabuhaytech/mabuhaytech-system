@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 
 import {
   PayslipData,
@@ -13,22 +13,36 @@ import {
   initialPayslipData,
   yearToDateFields,
 } from "@/components/payslips/payslip";
-
-import { FieldsRenderer } from "./FieldsRenderer";
 import {
   ErrorType,
   noEarlyEndDate,
   noLateStartDate,
   nonEmptyString,
   nonNegativeNumber,
-} from "./validation";
-import { calculateTotals } from "./calculations";
+} from "@/components/payslips/validation";
+import { calculateTotals } from "@/components/payslips/calculations";
+import { FieldsRenderer } from "@/components/payslips/FieldsRenderer";
 
-const AddPayslips: React.FC = () => {
+const PayslipDetail: React.FC = () => {
   const router = useRouter();
 
+  const params = useParams();
   const [payslipData, setPayslipData] =
     useState<PayslipData>(initialPayslipData);
+
+  useEffect(() => {
+    const fetchPayslip = async () => {
+      const response = await fetch(`/api/payslips/${params.id}`);
+      const data = await response.json();
+      setPayslipData(data);
+      console.log(data, 24);
+    };
+    fetchPayslip();
+  }, [params.id]);
+
+  if (!payslipData) return <div>loading...</div>;
+  console.log(payslipData, 44);
+
   const [errors, setErrors] = useState<Record<string, ErrorType>>({});
 
   const validateDateField = (
@@ -158,6 +172,7 @@ const AddPayslips: React.FC = () => {
                   errors={errors}
                   setPayslipData={setPayslipData}
                   handleFieldValidation={handleFieldValidation}
+                  auto={true}
                 />
               </div>
               <div>
@@ -169,6 +184,7 @@ const AddPayslips: React.FC = () => {
                   errors={errors}
                   setPayslipData={setPayslipData}
                   handleFieldValidation={handleFieldValidation}
+                  auto={true}
                 />
               </div>
             </div>
@@ -183,6 +199,7 @@ const AddPayslips: React.FC = () => {
                   errors={errors}
                   setPayslipData={setPayslipData}
                   handleFieldValidation={handleFieldValidation}
+                  auto={true}
                 />
               </div>
 
@@ -195,16 +212,17 @@ const AddPayslips: React.FC = () => {
                   errors={errors}
                   setPayslipData={setPayslipData}
                   handleFieldValidation={handleFieldValidation}
+                  auto={true}
                 />
               </div>
             </div>
 
-            <button
+            {/* <button
               type="submit"
               className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition"
             >
               Add Payslip
-            </button>
+            </button> */}
           </div>
         </div>
       </form>
@@ -212,4 +230,4 @@ const AddPayslips: React.FC = () => {
   );
 };
 
-export default AddPayslips;
+export default PayslipDetail;

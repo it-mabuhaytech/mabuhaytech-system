@@ -11,7 +11,8 @@ import { useRouter } from "next/navigation";
 import { checkUserRoleAdmin } from "@/utils/checkAccess";
 
 type Payslip = {
-  employeeId: string;
+  payslipId: string;
+  department: string;
   employeeName: string;
   payBeginDate: string;
   payEndDate: string;
@@ -21,8 +22,8 @@ type Payslip = {
 };
 
 const tableConfig = [
-  { header: "Employee ID", key: "employeeId" },
   { header: "Employee Name", key: "employeeName" },
+  { header: "Department", key: "department" },
   { header: "Pay Begin Date", key: "payBeginDate" },
   { header: "Pay End Date", key: "payEndDate" },
   { header: "Basic Salary", key: "basicSalary" },
@@ -40,8 +41,6 @@ const Payslips: React.FC = () => {
   const [endDate, setEndDate] = useState<string>("");
   const userid =
     typeof window !== "undefined" ? localStorage.getItem("userid") : null;
-
-  console.log(userid);
 
   const [isAdmin, setIsAdmin] = useState<boolean>();
   const [isLoading, setIsLoading] = useState(true);
@@ -193,7 +192,11 @@ const Payslips: React.FC = () => {
         </thead>
         <tbody>
           {currentEntries.map((payslip, index) => (
-            <tr key={index} className="hover:bg-gray-100">
+            <tr
+              key={index}
+              className="hover:bg-gray-100 cursor-pointer"
+              onClick={() => router.push(`/payslips/${payslip.payslipId}`)}
+            >
               {tableConfig.map(({ key }) => (
                 <td key={key} className="px-4 py-2 border-b text-center">
                   {["basicSalary", "totalDeductions", "netPay"].includes(key)

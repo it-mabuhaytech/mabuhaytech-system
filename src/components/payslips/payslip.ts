@@ -1,3 +1,5 @@
+import { customAlphabet } from "nanoid";
+
 export interface PayslipField {
   name: string;
   label: string;
@@ -64,6 +66,8 @@ export const calculatedFields: PayslipField[] = [
   { name: "netPay", label: "Net Pay", type: "number", auto: true },
 ];
 export interface PayslipData {
+  payslipId: string;
+
   employeeId: string;
   employeeName: string;
   department: string;
@@ -104,6 +108,8 @@ export interface PayslipData {
 }
 
 export const initialPayslipData: PayslipData = {
+  payslipId: "",
+
   employeeId: "",
   employeeName: "",
   department: "",
@@ -140,4 +146,11 @@ export const initialPayslipData: PayslipData = {
   payEndDate: "",
   absentDays: 0,
   lateMinutes: 0,
+};
+
+export const generatePayslipId = (): string => {
+  const set = "abcdefghijklmnopqrstuvwxyz0123456789";
+  const segment = customAlphabet(set, 8);
+
+  return `${segment()}-${segment()}-${segment()}-${segment()}`;
 };
