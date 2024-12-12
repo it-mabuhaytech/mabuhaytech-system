@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-
 import {
   PayslipData,
   PayslipField,
@@ -25,25 +24,27 @@ import { FieldsRenderer } from "@/components/payslips/FieldsRenderer";
 
 const PayslipDetail: React.FC = () => {
   const router = useRouter();
-
   const params = useParams();
+
   const [payslipData, setPayslipData] =
     useState<PayslipData>(initialPayslipData);
+  const [isLoading, setIsLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
+  const [errors, setErrors] = useState<Record<string, ErrorType>>({});
 
   useEffect(() => {
     const fetchPayslip = async () => {
       const response = await fetch(`/api/payslips/${params.id}`);
+      response.status === 404 && setNotFound(true);
       const data = await response.json();
       setPayslipData(data);
-      console.log(data, 24);
+      setIsLoading(false);
     };
     fetchPayslip();
   }, [params.id]);
 
-  if (!payslipData) return <div>loading...</div>;
-  console.log(payslipData, 44);
-
-  const [errors, setErrors] = useState<Record<string, ErrorType>>({});
+  if (notFound) return <div>Payslip not found</div>;
+  if (isLoading) return <div>Loading...</div>;
 
   const validateDateField = (
     fieldName: string,
@@ -216,13 +217,6 @@ const PayslipDetail: React.FC = () => {
                 />
               </div>
             </div>
-
-            {/* <button
-              type="submit"
-              className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition"
-            >
-              Add Payslip
-            </button> */}
           </div>
         </div>
       </form>

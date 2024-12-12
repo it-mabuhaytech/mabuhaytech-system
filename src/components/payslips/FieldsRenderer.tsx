@@ -28,7 +28,6 @@ export const FieldsRenderer: React.FC<FieldsRendererProps> = ({
   return (
     <div className={styles}>
       {fields.map((field) => {
-        console.log(field);
         return (
           <FormField
             key={field.name}
