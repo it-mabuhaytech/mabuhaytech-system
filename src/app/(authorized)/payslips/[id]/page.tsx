@@ -22,15 +22,30 @@ import {
 import { calculateTotals } from "@/components/payslips/calculations";
 import { FieldsRenderer } from "@/components/payslips/FieldsRenderer";
 
+import BackButton from "@/components/ui/backButton";
+import DeleteButton from "@/components/ui/deleteButton";
+import { checkUserRoleAdmin } from "@/utils/checkAccess";
+
 const PayslipDetail: React.FC = () => {
   const router = useRouter();
   const params = useParams();
 
   const [payslipData, setPayslipData] =
     useState<PayslipData>(initialPayslipData);
+
+  const [isAdmin, setIsAdmin] = useState<boolean>();
   const [isLoading, setIsLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [errors, setErrors] = useState<Record<string, ErrorType>>({});
+
+  useEffect(() => {
+    const setRole = async () => {
+      const isAdmin = await checkUserRoleAdmin();
+      setIsAdmin(isAdmin);
+      setIsLoading(false);
+    };
+    setRole();
+  }, []);
 
   useEffect(() => {
     const fetchPayslip = async () => {
@@ -157,7 +172,7 @@ const PayslipDetail: React.FC = () => {
   };
 
   return (
-    <div className="max-w-fit mx-auto">
+    <div className="max-w-fit mx-auto space-y-3 justify-end">
       <form onSubmit={handleSubmit} className="flex flex-row gap-6">
         <div className="flex flex-row gap-4 bg-white shadow-lg border rounded-lg p-5">
           <div className="space-y-2">
@@ -220,6 +235,17 @@ const PayslipDetail: React.FC = () => {
           </div>
         </div>
       </form>
+      <div className="flex justify-end gap-2">
+        <BackButton />
+        {!isLoading && isAdmin && (
+          <DeleteButton
+            itemId={payslipData.payslipId}
+            itemType="payslip"
+            apiEndpoint="/api/payslips"
+            confirmMessage="Are you sure you want to delete this payslip? This action cannot be undone."
+          />
+        )}
+      </div>
     </div>
   );
 };
