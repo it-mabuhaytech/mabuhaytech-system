@@ -13,7 +13,7 @@ interface FieldsRendererProps {
     field: PayslipField,
     value: string | number
   ) => ErrorType | null;
-  auto?: boolean;
+  viewOnly?: boolean;
 }
 
 export const FieldsRenderer: React.FC<FieldsRendererProps> = ({
@@ -23,7 +23,7 @@ export const FieldsRenderer: React.FC<FieldsRendererProps> = ({
   errors,
   setPayslipData,
   handleFieldValidation,
-  auto,
+  viewOnly,
 }) => {
   return (
     <div className={styles}>
@@ -41,7 +41,7 @@ export const FieldsRenderer: React.FC<FieldsRendererProps> = ({
               handleFieldValidation(field, value);
             }}
             error={errors[field.name]}
-            auto={auto}
+            auto={viewOnly || field.auto}
           />
         );
       })}
