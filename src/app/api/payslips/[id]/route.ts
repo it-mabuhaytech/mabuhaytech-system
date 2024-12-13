@@ -40,3 +40,35 @@ export const GET = async (req: NextRequest) => {
     );
   }
 };
+
+export const DELETE = async (req: NextRequest) => {
+  try {
+    const { pathname } = new URL(req.url);
+    const payslipId = pathname.split("/").pop();
+
+    if (!payslipId) {
+      return NextResponse.json(
+        { message: "Missing payslipId parameter" },
+        { status: 400 }
+      );
+    }
+
+    await db
+      .delete(payslipsTable)
+      .where(eq(payslipsTable.payslipId, payslipId));
+
+    return NextResponse.json(
+      { message: "Payslip deleted successfully" },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error deleting payslip:", error);
+    return NextResponse.json(
+      {
+        message: "Error deleting payslip",
+        error: error instanceof Error ? error.message : "Unknown error",
+      },
+      { status: 500 }
+    );
+  }
+};
