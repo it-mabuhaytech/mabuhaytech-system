@@ -23,7 +23,6 @@ export const PUT = async (req: NextRequest) => {
       );
     }
 
-    // Validate string fields
     const stringFields = [
       "employeeId",
       "employeeName",
@@ -42,7 +41,6 @@ export const PUT = async (req: NextRequest) => {
       }
     }
 
-    // Validate number fields
     const numberFields = [
       "basicSalary",
       "allowance",
@@ -82,7 +80,6 @@ export const PUT = async (req: NextRequest) => {
       }
     }
 
-    // Validate dates
     const startDateError = noLateStartDate(
       payslipData.payBeginDate,
       payslipData.payEndDate

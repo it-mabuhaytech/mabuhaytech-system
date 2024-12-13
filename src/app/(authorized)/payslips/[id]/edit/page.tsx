@@ -8,7 +8,6 @@ import {
   compensationFields,
   deductionFields,
   employeeFields,
-  generatePayslipId,
   initialPayslipData,
   yearToDateFields,
 } from "@/components/payslips/payslip";
@@ -22,11 +21,6 @@ import {
 import { calculateTotals } from "@/components/payslips/calculations";
 import { FieldsRenderer } from "@/components/payslips/FieldsRenderer";
 
-import BackButton from "@/components/ui/backButton";
-import DeleteButton from "@/components/ui/deleteButton";
-import { checkUserRoleAdmin } from "@/utils/checkAccess";
-import { Button } from "@/components/ui/button";
-
 const PayslipDetail: React.FC = () => {
   const router = useRouter();
   const params = useParams();
@@ -34,21 +28,9 @@ const PayslipDetail: React.FC = () => {
   const [payslipData, setPayslipData] =
     useState<PayslipData>(initialPayslipData);
 
-  const [isAdmin, setIsAdmin] = useState<boolean>();
   const [isLoading, setIsLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [errors, setErrors] = useState<Record<string, ErrorType>>({});
-
-  const [viewOnly, setViewOnly] = useState(true);
-
-  useEffect(() => {
-    const setRole = async () => {
-      const isAdmin = await checkUserRoleAdmin();
-      setIsAdmin(isAdmin);
-      setIsLoading(false);
-    };
-    setRole();
-  }, []);
 
   useEffect(() => {
     const fetchPayslip = async () => {
