@@ -188,7 +188,7 @@ const PayslipDetail: React.FC = () => {
                   errors={errors}
                   setPayslipData={setPayslipData}
                   handleFieldValidation={handleFieldValidation}
-                  auto={true}
+                  viewOnly={true}
                 />
               </div>
               <div>
@@ -200,7 +200,7 @@ const PayslipDetail: React.FC = () => {
                   errors={errors}
                   setPayslipData={setPayslipData}
                   handleFieldValidation={handleFieldValidation}
-                  auto={true}
+                  viewOnly={true}
                 />
               </div>
             </div>
@@ -215,7 +215,7 @@ const PayslipDetail: React.FC = () => {
                   errors={errors}
                   setPayslipData={setPayslipData}
                   handleFieldValidation={handleFieldValidation}
-                  auto={true}
+                  viewOnly={true}
                 />
               </div>
 
@@ -228,7 +228,7 @@ const PayslipDetail: React.FC = () => {
                   errors={errors}
                   setPayslipData={setPayslipData}
                   handleFieldValidation={handleFieldValidation}
-                  auto={true}
+                  viewOnly={true}
                 />
               </div>
             </div>
