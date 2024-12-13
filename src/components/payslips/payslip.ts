@@ -114,6 +114,32 @@ export const generatePayslipId = (): string => {
   return `${segment()}-${segment()}-${segment()}-${segment()}`;
 };
 
+export const determinePayDates = (
+  currentDate: Date = new Date()
+): { payBeginDate: string; payEndDate: string } => {
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth() + 1;
+  const day = currentDate.getDate();
+
+  let payBeginDate = "";
+  let payEndDate = "";
+
+  if (day <= 15) {
+    payBeginDate = `${year}-${String(month).padStart(2, "0")}-01`;
+    payEndDate = `${year}-${String(month).padStart(2, "0")}-15`;
+  } else {
+    payBeginDate = `${year}-${String(month).padStart(2, "0")}-16`;
+
+    const nextMonth = new Date(year, month, 0);
+    payEndDate = `${year}-${String(month).padStart(
+      2,
+      "0"
+    )}-${nextMonth.getDate()}`;
+  }
+
+  return { payBeginDate, payEndDate };
+};
+
 export const initialPayslipData: PayslipData = {
   payslipId: generatePayslipId(),
 
@@ -149,8 +175,8 @@ export const initialPayslipData: PayslipData = {
   totalDeductions: 0,
   netPay: 0,
 
-  payBeginDate: "",
-  payEndDate: "",
+  ...determinePayDates(),
+
   absentDays: 0,
   lateMinutes: 0,
 };
