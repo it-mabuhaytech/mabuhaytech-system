@@ -39,6 +39,8 @@ const PayslipDetail: React.FC = () => {
   const [notFound, setNotFound] = useState(false);
   const [errors, setErrors] = useState<Record<string, ErrorType>>({});
 
+  const [viewOnly, setViewOnly] = useState(true);
+
   useEffect(() => {
     const setRole = async () => {
       const isAdmin = await checkUserRoleAdmin();
@@ -152,15 +154,12 @@ const PayslipDetail: React.FC = () => {
 
     setErrors(newErrors);
 
-    setPayslipData({
-      ...payslipData,
-      payslipId: generatePayslipId(),
-    });
+    setPayslipData(payslipData);
 
     if (Object.keys(newErrors).length > 0) return;
 
-    const response = await fetch("/api/payslips/add", {
-      method: "POST",
+    const response = await fetch(`/api/payslips/${params.id}/edit`, {
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
@@ -173,90 +172,70 @@ const PayslipDetail: React.FC = () => {
   };
 
   return (
-    <div className="max-w-fit mx-auto space-y-3 justify-end">
-      <form onSubmit={handleSubmit} className="flex flex-row gap-6">
-        <div className="flex flex-row gap-4 bg-white shadow-lg border rounded-lg p-5">
-          <div className="space-y-2">
-            <div className="flex flex-row justify-between">
-              <div>
-                <h2 className="text-lg font-semibold mb-2 col-span-2">
-                  Employee Information
-                </h2>
-                <FieldsRenderer
-                  fields={employeeFields}
-                  styles={"grid grid-cols-2 gap-4"}
-                  payslipData={payslipData}
-                  errors={errors}
-                  setPayslipData={setPayslipData}
-                  handleFieldValidation={handleFieldValidation}
-                  viewOnly={true}
-                />
-              </div>
-              <div>
-                <h2 className="text-lg font-semibold mb-2">Compensation</h2>
-                <FieldsRenderer
-                  fields={compensationFields}
-                  styles={"grid grid-cols-2 gap-4"}
-                  payslipData={payslipData}
-                  errors={errors}
-                  setPayslipData={setPayslipData}
-                  handleFieldValidation={handleFieldValidation}
-                  viewOnly={true}
-                />
-              </div>
+    <form onSubmit={handleSubmit} className="flex flex-row gap-6">
+      <div className="flex flex-row gap-4 bg-white shadow-lg border rounded-lg p-5">
+        <div className="space-y-2">
+          <div className="flex flex-row justify-between">
+            <div>
+              <h2 className="text-lg font-semibold mb-2 col-span-2">
+                Employee Information
+              </h2>
+              <FieldsRenderer
+                fields={employeeFields}
+                styles={"grid grid-cols-2 gap-4"}
+                payslipData={payslipData}
+                errors={errors}
+                setPayslipData={setPayslipData}
+                handleFieldValidation={handleFieldValidation}
+              />
             </div>
-
-            <div className="flex flex-row gap-6">
-              <div>
-                <h2 className="text-lg font-semibold mb-2">Deductions</h2>
-                <FieldsRenderer
-                  fields={deductionFields}
-                  styles={"grid grid-cols-2 gap-4"}
-                  payslipData={payslipData}
-                  errors={errors}
-                  setPayslipData={setPayslipData}
-                  handleFieldValidation={handleFieldValidation}
-                  viewOnly={true}
-                />
-              </div>
-
-              <div>
-                <h2 className="text-lg font-semibold mb-2">Year-to-date</h2>
-                <FieldsRenderer
-                  fields={yearToDateFields}
-                  styles={"grid grid-cols-2 gap-4"}
-                  payslipData={payslipData}
-                  errors={errors}
-                  setPayslipData={setPayslipData}
-                  handleFieldValidation={handleFieldValidation}
-                  viewOnly={true}
-                />
-              </div>
+            <div>
+              <h2 className="text-lg font-semibold mb-2">Compensation</h2>
+              <FieldsRenderer
+                fields={compensationFields}
+                styles={"grid grid-cols-2 gap-4"}
+                payslipData={payslipData}
+                errors={errors}
+                setPayslipData={setPayslipData}
+                handleFieldValidation={handleFieldValidation}
+              />
             </div>
           </div>
+
+          <div className="flex flex-row gap-6">
+            <div>
+              <h2 className="text-lg font-semibold mb-2">Deductions</h2>
+              <FieldsRenderer
+                fields={deductionFields}
+                styles={"grid grid-cols-2 gap-4"}
+                payslipData={payslipData}
+                errors={errors}
+                setPayslipData={setPayslipData}
+                handleFieldValidation={handleFieldValidation}
+              />
+            </div>
+
+            <div>
+              <h2 className="text-lg font-semibold mb-2">Year-to-date</h2>
+              <FieldsRenderer
+                fields={yearToDateFields}
+                styles={"grid grid-cols-2 gap-4"}
+                payslipData={payslipData}
+                errors={errors}
+                setPayslipData={setPayslipData}
+                handleFieldValidation={handleFieldValidation}
+              />
+            </div>
+          </div>
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition"
+          >
+            Save changes
+          </button>
         </div>
-      </form>
-      <div className="flex justify-end gap-4">
-        <BackButton />
-        {!isLoading && isAdmin && (
-          <>
-            <Button
-              variant="outline"
-              onClick={() => router.push(`/payslips/${params.id}/edit`)}
-              size="lg"
-            >
-              Edit
-            </Button>
-            <DeleteButton
-              itemId={payslipData.payslipId}
-              itemType="payslip"
-              apiEndpoint="/api/payslips"
-              confirmMessage="Are you sure you want to delete this payslip? This action cannot be undone."
-            />
-          </>
-        )}
       </div>
-    </div>
+    </form>
   );
 };
 
