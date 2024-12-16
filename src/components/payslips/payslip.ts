@@ -65,6 +65,13 @@ export const yearToDateFields: PayslipField[] = [
 export const calculatedFields: PayslipField[] = [
   { name: "netPay", label: "Net Pay", type: "number", auto: true },
 ];
+
+export const netPayField: PayslipField = {
+  name: "netPay",
+  label: "Net Pay",
+  type: "number",
+  auto: true,
+};
 export interface PayslipData {
   payslipId: string;
 

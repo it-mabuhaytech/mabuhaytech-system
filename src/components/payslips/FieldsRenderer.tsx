@@ -4,7 +4,7 @@ import { PayslipData, PayslipField } from "./payslip";
 import { ErrorType } from "./validation";
 
 interface FieldsRendererProps {
-  fields: PayslipField[];
+  fields: PayslipField | PayslipField[];
   styles: string;
   payslipData: PayslipData;
   errors: Record<string, ErrorType>;
@@ -27,7 +27,38 @@ export const FieldsRenderer: React.FC<FieldsRendererProps> = ({
 }) => {
   return (
     <div className={styles}>
-      {fields.map((field) => {
+      {Array.isArray(fields) ? (
+        fields.map((field) => (
+          <FormField
+            key={field.name}
+            {...field}
+            value={payslipData[field.name as keyof PayslipData]}
+            onChange={(value: string | number) => {
+              setPayslipData((prev: PayslipData) => ({
+                ...prev,
+                [field.name]: value,
+              }));
+              handleFieldValidation(field, value);
+            }}
+            error={errors[field.name]}
+            auto={viewOnly || field.auto}
+          />
+        ))
+      ) : (
+        <FormField
+          {...fields}
+          value={payslipData[fields.name as keyof PayslipData]}
+          onChange={(value: string | number) => {
+            setPayslipData((prev: PayslipData) => ({
+              ...prev,
+              [fields.name]: value,
+            }));
+            handleFieldValidation(fields, value);
+          }}
+          auto={fields.auto}
+        />
+      )}
+      {/* {fields.map((field) => {
         return (
           <FormField
             key={field.name}
@@ -44,7 +75,7 @@ export const FieldsRenderer: React.FC<FieldsRendererProps> = ({
             auto={viewOnly || field.auto}
           />
         );
-      })}
+      })} */}
     </div>
   );
 };

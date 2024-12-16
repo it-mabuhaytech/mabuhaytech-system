@@ -10,6 +10,7 @@ import {
   deductionFields,
   employeeFields,
   initialPayslipData,
+  netPayField,
   yearToDateFields,
 } from "@/components/payslips/payslip";
 
@@ -136,7 +137,7 @@ const AddPayslips: React.FC = () => {
   };
 
   return (
-    <div className="max-w-fit mx-auto">
+    <div className="relative opacity">
       <form onSubmit={handleSubmit} className="flex flex-row gap-6">
         <div className="flex flex-row gap-4 bg-white shadow-lg border rounded-lg p-5">
           <div className="space-y-2">
@@ -192,16 +193,26 @@ const AddPayslips: React.FC = () => {
                 />
               </div>
             </div>
-
             <button
               type="submit"
               className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition"
             >
-              Add Payslip
+              Save changes
             </button>
           </div>
         </div>
       </form>
+      <div className="absolute left-full ml-4 top-0 w-max h-fit bg-white shadow-lg border rounded-lg p-5">
+        <h2 className="text-lg font-semibold mb-2 w-fit">Net Pay</h2>
+        <FieldsRenderer
+          fields={netPayField}
+          styles={""}
+          payslipData={payslipData}
+          errors={errors}
+          setPayslipData={setPayslipData}
+          handleFieldValidation={handleFieldValidation}
+        />
+      </div>
     </div>
   );
 };

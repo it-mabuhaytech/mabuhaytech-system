@@ -9,6 +9,7 @@ import {
   deductionFields,
   employeeFields,
   initialPayslipData,
+  netPayField,
   yearToDateFields,
 } from "@/components/payslips/payslip";
 import {
@@ -20,6 +21,7 @@ import {
 } from "@/components/payslips/validation";
 import { calculateTotals } from "@/components/payslips/calculations";
 import { FieldsRenderer } from "@/components/payslips/FieldsRenderer";
+import { cn } from "@/lib/utils";
 
 const PayslipDetail: React.FC = () => {
   const router = useRouter();
@@ -154,70 +156,83 @@ const PayslipDetail: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-row gap-6">
-      <div className="flex flex-row gap-4 bg-white shadow-lg border rounded-lg p-5">
-        <div className="space-y-2">
-          <div className="flex flex-row justify-between">
-            <div>
-              <h2 className="text-lg font-semibold mb-2 col-span-2">
-                Employee Information
-              </h2>
-              <FieldsRenderer
-                fields={employeeFields}
-                styles={"grid grid-cols-2 gap-4"}
-                payslipData={payslipData}
-                errors={errors}
-                setPayslipData={setPayslipData}
-                handleFieldValidation={handleFieldValidation}
-              />
-            </div>
-            <div>
-              <h2 className="text-lg font-semibold mb-2">Compensation</h2>
-              <FieldsRenderer
-                fields={compensationFields}
-                styles={"grid grid-cols-2 gap-4"}
-                payslipData={payslipData}
-                errors={errors}
-                setPayslipData={setPayslipData}
-                handleFieldValidation={handleFieldValidation}
-              />
-            </div>
-          </div>
-
-          <div className="flex flex-row gap-6">
-            <div>
-              <h2 className="text-lg font-semibold mb-2">Deductions</h2>
-              <FieldsRenderer
-                fields={deductionFields}
-                styles={"grid grid-cols-2 gap-4"}
-                payslipData={payslipData}
-                errors={errors}
-                setPayslipData={setPayslipData}
-                handleFieldValidation={handleFieldValidation}
-              />
+    <div className="relative opacity">
+      <form onSubmit={handleSubmit} className="flex flex-row gap-6">
+        <div className="flex flex-row gap-4 bg-white shadow-lg border rounded-lg p-5">
+          <div className="space-y-2">
+            <div className="flex flex-row justify-between">
+              <div>
+                <h2 className="text-lg font-semibold mb-2 col-span-2">
+                  Employee Information
+                </h2>
+                <FieldsRenderer
+                  fields={employeeFields}
+                  styles={"grid grid-cols-2 gap-4"}
+                  payslipData={payslipData}
+                  errors={errors}
+                  setPayslipData={setPayslipData}
+                  handleFieldValidation={handleFieldValidation}
+                />
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold mb-2">Compensation</h2>
+                <FieldsRenderer
+                  fields={compensationFields}
+                  styles={"grid grid-cols-2 gap-4"}
+                  payslipData={payslipData}
+                  errors={errors}
+                  setPayslipData={setPayslipData}
+                  handleFieldValidation={handleFieldValidation}
+                />
+              </div>
             </div>
 
-            <div>
-              <h2 className="text-lg font-semibold mb-2">Year-to-date</h2>
-              <FieldsRenderer
-                fields={yearToDateFields}
-                styles={"grid grid-cols-2 gap-4"}
-                payslipData={payslipData}
-                errors={errors}
-                setPayslipData={setPayslipData}
-                handleFieldValidation={handleFieldValidation}
-              />
+            <div className="flex flex-row gap-6">
+              <div>
+                <h2 className="text-lg font-semibold mb-2">Deductions</h2>
+                <FieldsRenderer
+                  fields={deductionFields}
+                  styles={"grid grid-cols-2 gap-4"}
+                  payslipData={payslipData}
+                  errors={errors}
+                  setPayslipData={setPayslipData}
+                  handleFieldValidation={handleFieldValidation}
+                />
+              </div>
+
+              <div>
+                <h2 className="text-lg font-semibold mb-2">Year-to-date</h2>
+                <FieldsRenderer
+                  fields={yearToDateFields}
+                  styles={"grid grid-cols-2 gap-4"}
+                  payslipData={payslipData}
+                  errors={errors}
+                  setPayslipData={setPayslipData}
+                  handleFieldValidation={handleFieldValidation}
+                />
+              </div>
             </div>
+            <button
+              type="submit"
+              className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition"
+            >
+              Save changes
+            </button>
           </div>
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition"
-          >
-            Save changes
-          </button>
         </div>
+      </form>
+      <div className="absolute left-full ml-4 top-0 w-max h-fit bg-white shadow-lg border rounded-lg p-5">
+        <h2 className="text-lg font-semibold mb-2 w-fit">Net Pay</h2>
+        <FieldsRenderer
+          fields={netPayField}
+          styles={""}
+          payslipData={payslipData}
+          errors={errors}
+          setPayslipData={setPayslipData}
+          handleFieldValidation={handleFieldValidation}
+        />
       </div>
-    </form>
+    </div>
   );
 };
 

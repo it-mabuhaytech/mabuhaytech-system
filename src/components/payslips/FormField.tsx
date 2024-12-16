@@ -39,9 +39,11 @@ export const FormField = ({
           error || showBorderError ? "border-red-500" : ""
         } disabled:cursor-not-allowed`}
       />
-      <label className="block text-sm text-red-500 font-medium min-h-5">
-        {error?.message}
-      </label>
+      {!auto && (
+        <label className="block text-sm text-red-500 font-medium min-h-5">
+          {error?.message}
+        </label>
+      )}
     </div>
   );
 };
