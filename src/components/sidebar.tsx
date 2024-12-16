@@ -1,4 +1,5 @@
 // components/Sidebar.tsx
+import { cn } from "@/lib/utils";
 import { checkUserRoleAdmin } from "@/utils/checkAccess";
 import React, { useEffect, useState } from "react";
 
@@ -58,9 +59,13 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <div
-      className={`fixed inset-0 bg-gray-800 bg-opacity-50 transition-opacity duration-300 ${
-        isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-      }`}
+      className={cn(
+        "fixed inset-0 bg-gray-800 bg-opacity-50 transition-opacity duration-300 z-[5]",
+        {
+          "opacity-100": isOpen,
+          "opacity-0 pointer-events-none": !isOpen,
+        }
+      )}
       onClick={toggleSidebar}
     >
       <div
