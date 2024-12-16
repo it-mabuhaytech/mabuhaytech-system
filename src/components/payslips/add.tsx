@@ -137,7 +137,7 @@ const AddPayslips: React.FC = () => {
   };
 
   return (
-    <div className="relative opacity">
+    <div className="relative">
       <form onSubmit={handleSubmit} className="flex flex-row gap-6">
         <div className="flex flex-row gap-4 bg-white shadow-lg border rounded-lg p-5">
           <div className="space-y-2">

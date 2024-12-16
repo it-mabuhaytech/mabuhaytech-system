@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Confirmation } from "./confirmation";
 
+import { MdDelete } from "react-icons/md";
+
 interface DeleteButtonProps {
   itemId: string | number;
   itemType: string;
@@ -16,14 +18,11 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({
   itemType,
   apiEndpoint,
   confirmMessage,
-  className = "px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none",
 }) => {
-  const [isDeleting, setIsDeleting] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const router = useRouter();
 
   const handleDelete = async () => {
-    setIsDeleting(true);
     try {
       const response = await fetch(`${apiEndpoint}/${itemId}`, {
         method: "DELETE",
@@ -37,20 +36,17 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({
     } catch (error) {
       console.error("Error:", error);
     } finally {
-      setIsDeleting(false);
       setShowConfirmation(false);
     }
   };
 
   return (
     <>
-      <button
+      <MdDelete
         onClick={() => setShowConfirmation(true)}
-        disabled={isDeleting}
-        className={className}
-      >
-        Delete
-      </button>
+        className="text-red-500 hover:text-red-600"
+        size={25}
+      />
 
       <Confirmation
         isOpen={showConfirmation}

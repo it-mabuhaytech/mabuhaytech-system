@@ -1,31 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import {
-  PayslipData,
-  PayslipField,
-  compensationFields,
-  deductionFields,
-  employeeFields,
-  generatePayslipId,
-  initialPayslipData,
-  yearToDateFields,
-} from "@/components/payslips/payslip";
-import {
-  ErrorType,
-  noEarlyEndDate,
-  noLateStartDate,
-  nonEmptyString,
-  nonNegativeNumber,
-} from "@/components/payslips/validation";
-import { calculateTotals } from "@/components/payslips/calculations";
-import { FieldsRenderer } from "@/components/payslips/FieldsRenderer";
-
-import BackButton from "@/components/ui/backButton";
+import { PayslipData, initialPayslipData } from "@/components/payslips/payslip";
 import DeleteButton from "@/components/ui/deleteButton";
 import { checkUserRoleAdmin } from "@/utils/checkAccess";
-import { Button } from "@/components/ui/button";
+
+import { MdEdit } from "react-icons/md";
 
 const PayslipDetail: React.FC = () => {
   const router = useRouter();
@@ -37,7 +18,6 @@ const PayslipDetail: React.FC = () => {
   const [isAdmin, setIsAdmin] = useState<boolean>();
   const [isLoading, setIsLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
-  const [errors, setErrors] = useState<Record<string, ErrorType>>({});
 
   useEffect(() => {
     const setRole = async () => {
@@ -62,200 +42,190 @@ const PayslipDetail: React.FC = () => {
   if (notFound) return <div>Payslip not found</div>;
   if (isLoading) return <div>Loading...</div>;
 
-  const validateDateField = (
-    fieldName: string,
-    value: string,
-    payslipData: PayslipData
-  ): ErrorType | null => {
-    if (fieldName === "payBeginDate") {
-      return noLateStartDate(value, payslipData.payEndDate);
-    } else if (fieldName === "payEndDate") {
-      return noEarlyEndDate(value, payslipData.payBeginDate);
-    }
-    return null;
-  };
-
-  const handleFieldValidation = (
-    field: PayslipField,
-    value: string | number
-  ) => {
-    let error: ErrorType | null;
-
-    if (field.type === "date") {
-      error = validateDateField(field.name, value as string, payslipData);
-    } else if (field.type === "number") {
-      error = nonNegativeNumber(value as number);
-    } else {
-      error = nonEmptyString(value as string);
-    }
-
-    const newPayslipData = {
-      ...payslipData,
-      [field.name]: value,
-    };
-
-    const totals = calculateTotals(newPayslipData);
-
-    setPayslipData({
-      ...newPayslipData,
-      totalCompensations: totals.totalCompensations,
-      totalDeductions: totals.totalDeductions,
-      netPay: totals.netPay,
-      yearlyTax: totals.yearlyTax,
-      yearlySSS: totals.yearlySSS,
-    });
-
-    setErrors((prev) => {
-      if (error) {
-        return { ...prev, [field.name]: error };
-      }
-      const newErrors = { ...prev };
-      delete newErrors[field.name];
-      return newErrors;
-    });
-
-    return error;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const newErrors: Record<string, ErrorType> = {};
-
-    const startDateError = noLateStartDate(
-      payslipData.payBeginDate,
-      payslipData.payEndDate
-    );
-
-    const endDateError = noEarlyEndDate(
-      payslipData.payEndDate,
-      payslipData.payBeginDate
-    );
-
-    if (startDateError) {
-      newErrors.payBeginDate = startDateError;
-    } else if (endDateError) {
-      newErrors.payEndDate = endDateError;
-    }
-
-    Object.entries(payslipData).forEach(
-      ([key, value]: [string, string | number]) => {
-        const error =
-          typeof value === "string"
-            ? nonEmptyString(value)
-            : nonNegativeNumber(value);
-        if (error) {
-          newErrors[key] = error;
-        }
-      }
-    );
-
-    setErrors(newErrors);
-
-    setPayslipData({
-      ...payslipData,
-      payslipId: generatePayslipId(),
-    });
-
-    if (Object.keys(newErrors).length > 0) return;
-
-    const response = await fetch("/api/payslips/add", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payslipData),
-    });
-
-    if (response.ok) {
-      router.push("/payslips");
-    }
-  };
-
   return (
-    <div className="max-w-fit mx-auto space-y-3 justify-end">
-      <form onSubmit={handleSubmit} className="flex flex-row gap-6">
-        <div className="flex flex-row gap-4 bg-white shadow-lg border rounded-lg p-5">
-          <div className="space-y-2">
-            <div className="flex flex-row justify-between">
-              <div>
-                <h2 className="text-lg font-semibold mb-2 col-span-2">
-                  Employee Information
-                </h2>
-                <FieldsRenderer
-                  fields={employeeFields}
-                  styles={"grid grid-cols-2 gap-4"}
-                  payslipData={payslipData}
-                  errors={errors}
-                  setPayslipData={setPayslipData}
-                  handleFieldValidation={handleFieldValidation}
-                  viewOnly={true}
-                />
-              </div>
-              <div>
-                <h2 className="text-lg font-semibold mb-2">Compensation</h2>
-                <FieldsRenderer
-                  fields={compensationFields}
-                  styles={"grid grid-cols-2 gap-4"}
-                  payslipData={payslipData}
-                  errors={errors}
-                  setPayslipData={setPayslipData}
-                  handleFieldValidation={handleFieldValidation}
-                  viewOnly={true}
-                />
-              </div>
+    <div className="relative">
+      <div className="w-[800px] space-y-4 ">
+        <div className="flex flex-row">
+          <div className="grid grid-cols-2 w-full">
+            {[
+              {
+                label: "Employee Name",
+                key: "employeeName",
+                noBorderBottom: true,
+              },
+              { label: "Employee Number", key: "employeeId" },
+              { label: "Department", key: "department" },
+              { label: "Pay Begin Date", key: "payBeginDate" },
+              { label: "Pay End Date", key: "payEndDate" },
+              { label: "Position", key: "position" },
+            ].map((item) => (
+              <React.Fragment key={item.label}>
+                <div
+                  className={`bg-gray-800 text-white p-2 font-semibold border-l border-gray-500 ${
+                    !item.noBorderBottom ? "border-b" : "border-y"
+                  }`}
+                >
+                  {item.label}
+                </div>
+                <div
+                  className={`p-2 border-x border-gray-500 ${
+                    !item.noBorderBottom ? "border-b" : "border-y"
+                  }`}
+                >
+                  {payslipData[item.key as keyof PayslipData]}
+                </div>
+              </React.Fragment>
+            ))}
+          </div>{" "}
+          <div className="w-full">
+            <div className="bg-gray-800 text-white p-2 font-semibold border-r border-y border-gray-500 text-center">
+              Compensation
             </div>
-
-            <div className="flex flex-row gap-6">
-              <div>
-                <h2 className="text-lg font-semibold mb-2">Deductions</h2>
-                <FieldsRenderer
-                  fields={deductionFields}
-                  styles={"grid grid-cols-2 gap-4"}
-                  payslipData={payslipData}
-                  errors={errors}
-                  setPayslipData={setPayslipData}
-                  handleFieldValidation={handleFieldValidation}
-                  viewOnly={true}
-                />
+            <div className="grid grid-cols-2">
+              {[
+                { label: "Basic Salary", key: "basicSalary" },
+                { label: "Allowance", key: "allowance" },
+                { label: "Overtime", key: "overtime" },
+                { label: "Holiday", key: "holidayPay" },
+              ].map((item) => (
+                <React.Fragment key={item.label}>
+                  <div className="p-2 font-medium bg-gray-200 border-b border-r border-gray-500">
+                    {item.label}
+                  </div>
+                  <div className="p-2 border-r border-b border-gray-500">
+                    {payslipData[item.key as keyof PayslipData]}
+                  </div>
+                </React.Fragment>
+              ))}
+              <div className="p-2 font-semibold bg-gray-200 border-b border-r border-gray-500">
+                Total:
               </div>
-
-              <div>
-                <h2 className="text-lg font-semibold mb-2">Year-to-date</h2>
-                <FieldsRenderer
-                  fields={yearToDateFields}
-                  styles={"grid grid-cols-2 gap-4"}
-                  payslipData={payslipData}
-                  errors={errors}
-                  setPayslipData={setPayslipData}
-                  handleFieldValidation={handleFieldValidation}
-                  viewOnly={true}
-                />
+              <div className="p-2 border-b border-r border-gray-500">
+                {payslipData.totalCompensations}
               </div>
             </div>
           </div>
         </div>
-      </form>
-      <div className="flex justify-end gap-4">
-        <BackButton />
-        {!isLoading && isAdmin && (
-          <>
-            <Button
-              variant="outline"
+
+        <div className="flex flex-row">
+          <div className="w-full ">
+            <div className="bg-gray-800 text-white p-2 font-semibold border border-gray-500 text-center">
+              Deductions
+            </div>
+            <div className="grid grid-cols-2">
+              {[
+                { label: "SSS", key: "sss" },
+                { label: "Philhealth", key: "philhealth" },
+                { label: "Pag-ibig", key: "pagibig" },
+                { label: "Tax", key: "tax" },
+                { label: "Absent", key: "absent" },
+                { label: "Late", key: "late" },
+                { label: "Undertime", key: "undertime" },
+                { label: "Halfday", key: "halfday" },
+              ].map((item) => (
+                <React.Fragment key={item.label}>
+                  <div className="p-2 font-medium bg-gray-200 border-b border-x border-gray-500">
+                    {item.label}
+                  </div>
+                  <div className="p-2 border-b border-r border-gray-500">
+                    {payslipData[item.key as keyof PayslipData]}
+                  </div>
+                </React.Fragment>
+              ))}
+              <div className="p-2 font-semibold bg-gray-200 border-b border-x border-gray-500">
+                Total:
+              </div>
+              <div className="p-2 border-b border-r border-gray-500">
+                {payslipData.totalDeductions}
+              </div>
+            </div>
+          </div>
+
+          <div className="w-full">
+            <div className="bg-gray-800 text-white p-2 font-semibold border-y border-gray-500 text-center">
+              Year-to-Date
+            </div>
+            <div className="grid grid-cols-2">
+              {[
+                { label: "Taxable Gross", key: "taxableGross" },
+                { label: "Tax", key: "yearlyTax" },
+                { label: "SSS", key: "yearlySSS" },
+                { label: "PHIC", key: "phic" },
+                { label: "HDMF", key: "hdmf" },
+                { label: "Gross Income", key: "grossIncome" },
+              ].map((item) => (
+                <React.Fragment key={item.label}>
+                  <div className="p-2 font-medium -y bg-gray-200 border-b border-gray-500">
+                    {item.label}
+                  </div>
+                  <div className="p-2 border-b border-x border-gray-500">
+                    {payslipData[item.key as keyof PayslipData]}
+                  </div>
+                </React.Fragment>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col w-full">
+          <div className="flex w-full bg-gray-800 text-white font-semibold">
+            <div className="p-2 w-1/2 text-center border border-gray-500">
+              Days
+            </div>
+            <div className="p-2 w-1/2 text-center border-y border-r border-gray-500">
+              Net Pay
+            </div>
+          </div>
+          <div className="flex w-full">
+            <div className="flex flex-col w-1/2">
+              <div className="flex">
+                <div className="p-2 font-semibold bg-gray-200 w-1/2 border-x border-b border-gray-500">
+                  Absent
+                </div>
+                <div className="p-2 font-semibold w-1/2 border-b border-r border-gray-500">
+                  {payslipData.absentDays}
+                </div>
+              </div>
+              <div className="flex">
+                <div className="p-2 font-semibold bg-gray-200 w-1/2 border-x border-b border-gray-500">
+                  Minutes of lates
+                </div>
+                <div className="p-2 font-semibold  w-1/2 border-b border-r border-gray-500">
+                  {payslipData.lateMinutes}
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center justify-center w-1/2 bg-gray-100 font-semibold text-center border-b border-r border-gray-500">
+              {payslipData.netPay}
+            </div>
+          </div>
+        </div>
+      </div>
+      {!isLoading && isAdmin && (
+        <div className="flex flex-col space-y-2 absolute -right-8 top-2">
+          <div
+            className="cursor-pointer hover:scale-110 transition-transform duration-200 w-fit h-fit"
+            title="Edit"
+          >
+            <MdEdit
+              className="text-gray-800 hover:text-blue-900"
+              size={25}
               onClick={() => router.push(`/payslips/${params.id}/edit`)}
-              size="lg"
-            >
-              Edit
-            </Button>
+            />
+          </div>
+          <div
+            className="cursor-pointer hover:scale-110 transition-transform duration-200 w-fit h-fit"
+            title="Delete"
+          >
             <DeleteButton
               itemId={payslipData.payslipId}
               itemType="payslip"
               apiEndpoint="/api/payslips"
               confirmMessage="Are you sure you want to delete this payslip? This action cannot be undone."
             />
-          </>
-        )}
-      </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
