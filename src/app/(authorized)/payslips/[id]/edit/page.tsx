@@ -21,7 +21,6 @@ import {
 } from "@/components/payslips/validation";
 import { calculateTotals } from "@/components/payslips/calculations";
 import { FieldsRenderer } from "@/components/payslips/FieldsRenderer";
-import { cn } from "@/lib/utils";
 
 const PayslipDetail: React.FC = () => {
   const router = useRouter();
